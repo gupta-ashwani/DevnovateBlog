@@ -10,10 +10,13 @@ interface CategoryPerformanceProps {
       totalViews: number;
       totalLikes: number;
       totalComments: number;
-      avgViews: number;
-      avgLikes: number;
-      avgComments: number;
-      engagementRate: string;
+      totalShares: number;
+      avgEngagementRate: number;
+      topBlog: {
+        title: string;
+        slug: string;
+        views: number;
+      };
     }>;
   };
 }
@@ -39,10 +42,9 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
     ...data.categories.map((cat) => cat.totalComments)
   );
 
-  const getEngagementColor = (rate: string) => {
-    const numRate = parseFloat(rate);
-    if (numRate >= 10) return "text-green-600 bg-green-50";
-    if (numRate >= 5) return "text-yellow-600 bg-yellow-50";
+  const getEngagementColor = (rate: number) => {
+    if (rate >= 10) return "text-green-600 bg-green-50";
+    if (rate >= 5) return "text-yellow-600 bg-yellow-50";
     return "text-red-600 bg-red-50";
   };
 
@@ -226,18 +228,18 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-xs text-gray-600 space-y-1">
-                      <div>{category.avgViews} views/blog</div>
-                      <div>{category.avgLikes} likes/blog</div>
-                      <div>{category.avgComments} comments/blog</div>
+                      <div>{Math.round(category.totalViews / category.blogCount)} views/blog</div>
+                      <div>{Math.round(category.totalLikes / category.blogCount)} likes/blog</div>
+                      <div>{Math.round(category.totalComments / category.blogCount)} comments/blog</div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded ${getEngagementColor(
-                        category.engagementRate
+                        category.avgEngagementRate
                       )}`}
                     >
-                      {category.engagementRate}%
+                      {category.avgEngagementRate.toFixed(1)}%
                     </span>
                   </td>
                 </motion.tr>
@@ -266,7 +268,7 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
             <div className="flex items-center">
               <TrendingUp className="h-6 w-6 text-green-600 mr-2" />
               <span className="text-2xl font-bold text-green-600">
-                {data.categories[0].engagementRate}%
+                {data.categories[0].avgEngagementRate.toFixed(1)}%
               </span>
             </div>
           </div>

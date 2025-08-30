@@ -16,24 +16,18 @@ interface BlogsPerformanceTableProps {
       _id: string;
       title: string;
       slug: string;
-      status: string;
-      publishedAt: string;
       category: string;
-      tags: string[];
-      readingTime: number;
-      metrics: {
-        views: number;
-        likes: number;
-        comments: number;
-        shares: number;
-        engagementRate: number;
-      };
-      createdAt: string;
+      views: number;
+      likes: number;
+      comments: number;
+      shares: number;
+      publishedAt: string;
+      engagementRate: number;
     }>;
     pagination: {
       currentPage: number;
       totalPages: number;
-      totalBlogs: number;
+      totalBlogs?: number;
       hasNextPage: boolean;
       hasPrevPage: boolean;
     };
@@ -52,19 +46,10 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
   sortOrder,
   onSortChange,
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "draft":
-        return "bg-gray-100 text-gray-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const getEngagementColor = (rate: number) => {
+    if (rate >= 10) return "text-green-600 bg-green-50";
+    if (rate >= 5) return "text-yellow-600 bg-yellow-50";
+    return "text-red-600 bg-red-50";
   };
 
   const formatDate = (dateString: string) => {
@@ -90,12 +75,6 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
         }`}
       />
     );
-  };
-
-  const getEngagementColor = (rate: number) => {
-    if (rate >= 10) return "text-green-600 bg-green-50";
-    if (rate >= 5) return "text-yellow-600 bg-yellow-50";
-    return "text-red-600 bg-red-50";
   };
 
   if (data.blogs.length === 0) {
@@ -128,9 +107,6 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Blog
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
               </th>
               <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -191,41 +167,15 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                       {blog.title}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {blog.category} • {blog.readingTime} min read
+                      {blog.category}
                     </div>
-                    {blog.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {blog.tags.slice(0, 2).map((tag) => (
-                          <span
-                            key={tag}
-                            className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {blog.tags.length > 2 && (
-                          <span className="text-xs text-gray-500">
-                            +{blog.tags.length - 2} more
-                          </span>
-                        )}
-                      </div>
-                    )}
                   </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                      blog.status
-                    )}`}
-                  >
-                    {blog.status}
-                  </span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <Eye className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.metrics.views.toLocaleString()}
+                      {blog.views.toLocaleString()}
                     </span>
                   </div>
                 </td>
@@ -233,7 +183,7 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                   <div className="flex items-center">
                     <Heart className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.metrics.likes.toLocaleString()}
+                      {blog.likes.toLocaleString()}
                     </span>
                   </div>
                 </td>
@@ -241,34 +191,30 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                   <div className="flex items-center">
                     <MessageCircle className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.metrics.comments.toLocaleString()}
+                      {blog.comments.toLocaleString()}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-medium rounded ${getEngagementColor(
-                      blog.metrics.engagementRate
+                      blog.engagementRate
                     )}`}
                   >
-                    {blog.metrics.engagementRate.toFixed(1)}%
+                    {blog.engagementRate.toFixed(1)}%
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {blog.publishedAt
-                    ? formatDate(blog.publishedAt)
-                    : formatDate(blog.createdAt)}
+                  {formatDate(blog.publishedAt)}
                 </td>
                 <td className="px-6 py-4">
-                  {blog.status === "approved" && (
-                    <Link
-                      to={`/blog/${blog.slug}`}
-                      className="text-gray-400 hover:text-blue-600 transition-colors"
-                      title="View blog"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </Link>
-                  )}
+                  <Link
+                    to={`/blog/${blog.slug}`}
+                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    title="View blog"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Link>
                 </td>
               </motion.tr>
             ))}

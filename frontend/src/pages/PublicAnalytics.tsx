@@ -170,11 +170,11 @@ const PublicAnalytics: React.FC = () => {
                     <>
                       <div className="flex items-center gap-1">
                         <TrendingUp className="w-4 h-4" />
-                        <span>{overview.totalBlogs} blogs</span>
+                        <span>{overview.overview.totalBlogs} blogs</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Eye className="w-4 h-4" />
-                        <span>{overview.totalViews} views</span>
+                        <span>{overview.overview.totalViews} views</span>
                       </div>
                     </>
                   )}
@@ -216,9 +216,9 @@ const PublicAnalytics: React.FC = () => {
       >
         {activeTab === "overview" && overview && (
           <div className="space-y-8">
-            <AnalyticsOverviewCards overview={overview} />
-            {blogsAnalytics && (
-              <TopPerformingBlogs blogs={blogsAnalytics.blogs.slice(0, 5)} />
+            <AnalyticsOverviewCards overview={overview.overview} />
+            {overview.topPerformingBlogs && (
+              <TopPerformingBlogs blogs={overview.topPerformingBlogs.slice(0, 5)} />
             )}
           </div>
         )}
@@ -233,7 +233,7 @@ const PublicAnalytics: React.FC = () => {
       </motion.div>
 
       {/* Empty State */}
-      {overview && overview.totalBlogs === 0 && (
+      {overview && overview.overview.totalBlogs === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

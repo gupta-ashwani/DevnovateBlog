@@ -323,19 +323,36 @@ export interface ConfirmDialogProps {
 
 // Analytics Types
 export interface AnalyticsOverview {
-  totalBlogs: number;
-  totalViews: number;
-  totalLikes: number;
-  totalComments: number;
-  totalShares: number;
-  publishedBlogs: number;
-  draftBlogs: number;
-  pendingBlogs: number;
-  rejectedBlogs: number;
-  avgViewsPerBlog: number;
-  avgLikesPerBlog: number;
-  avgCommentsPerBlog: number;
-  engagementRate: number;
+  overview: {
+    totalBlogs: number;
+    totalViews: number;
+    totalLikes: number;
+    totalComments: number;
+    totalShares: number;
+    publishedBlogs: number;
+    draftBlogs: number;
+    pendingBlogs: number;
+    rejectedBlogs: number;
+    avgViewsPerBlog: number;
+    avgLikesPerBlog: number;
+    avgCommentsPerBlog: number;
+    engagementRate: number;
+  };
+  topPerformingBlogs: Array<{
+    _id: string;
+    title: string;
+    slug: string;
+    views: number;
+    likes: number;
+    comments: number;
+    publishedAt: string;
+    status: string;
+  }>;
+  recentActivity: {
+    newBlogs: number;
+    newLikes: number;
+    newComments: number;
+  };
 }
 
 export interface BlogAnalytics {
