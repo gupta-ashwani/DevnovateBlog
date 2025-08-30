@@ -18,7 +18,7 @@ const uploadRoutes = require("./src/routes/upload");
 
 const app = express();
 
-// Security middleware
+// Security
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -30,13 +30,18 @@ const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use("/api/", limiter);
 
-// CORS configuration
+// CORS
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
-  : [process.env.FRONTEND_URL || "http://localhost:3000"];
+  : [
+      process.env.FRONTEND_URL || "http://localhost:3000",
+      "http://localhost:3001",
+    ];
 
 app.use(
   cors({
@@ -45,19 +50,17 @@ app.use(
   })
 );
 
-// Compression middleware
+// Compression + body parsing
 app.use(compression());
-
-// Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Session configuration for view tracking
+// Sessions
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "supersecret",
+    secret: process.env.SESSION_SECRET || "defaultsecret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URL,
       touchAfter: 24 * 3600,
@@ -70,12 +73,12 @@ app.use(
   })
 );
 
-// Logging middleware
+// Logging
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-// Database connection
+// MongoDB
 mongoose
   .connect(
     process.env.MONGODB_URL || "mongodb://localhost:27017/devnovate-blog",
@@ -85,7 +88,10 @@ mongoose
     }
   )
   .then(() => console.log("📊 MongoDB connected successfully"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -95,7 +101,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 
-// Health check endpoint
+// Health check
 app.get("/api/health", (req, res) => {
   return res.status(200).json({
     status: "success",
@@ -105,17 +111,23 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler
-app.use("*", (req, res) => {
-  return res.status(404).json({
-    status: "error",
-    message: `Route ${req.originalUrl} not found`,
-  });
+// 404 handler (ensure single response)
+app.all("*", (req, res) => {
+  if (!res.headersSent) {
+    return res.status(404).json({
+      status: "error",
+      message: `Route ${req.originalUrl} not found`,
+    });
+  }
 });
 
-// Global error handler
+// Global error handler (ensure single response)
 app.use((err, req, res, next) => {
   console.error(err.stack);
+
+  if (res.headersSent) {
+    return next(err); // delegate to default Express handler
+  }
 
   if (err.name === "ValidationError") {
     return res.status(400).json({
@@ -146,7 +158,6 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📱 Environment: ${process.env.NODE_ENV}`);
