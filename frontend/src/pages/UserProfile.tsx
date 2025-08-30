@@ -468,17 +468,35 @@ const UserProfile: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            {isOwnProfile && (
-              <div className="flex space-x-3">
+            <div className="flex space-x-3">
+              {!isOwnProfile && (
                 <Link
-                  to="/write"
-                  className="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  to={`/analytics/${user._id}`}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Write Blog
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  View Analytics
                 </Link>
-              </div>
-            )}
+              )}
+              {isOwnProfile && (
+                <>
+                  <Link
+                    to="/analytics"
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    My Analytics
+                  </Link>
+                  <Link
+                    to="/write"
+                    className="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Write Blog
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

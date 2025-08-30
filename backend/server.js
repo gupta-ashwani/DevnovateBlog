@@ -15,6 +15,7 @@ const commentRoutes = require("./src/routes/comments");
 const userRoutes = require("./src/routes/users");
 const adminRoutes = require("./src/routes/admin");
 const uploadRoutes = require("./src/routes/upload");
+const analyticsRoutes = require("./src/routes/analytics");
 
 const app = express();
 
@@ -119,6 +120,7 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

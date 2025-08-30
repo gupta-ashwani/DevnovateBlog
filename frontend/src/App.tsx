@@ -17,6 +17,8 @@ const BlogEditor = lazy(() => import("./pages/BlogEditor"));
 const Profile = lazy(() => import("./pages/Profile"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
+const PublicAnalytics = lazy(() => import("./pages/PublicAnalytics"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -97,6 +99,7 @@ function App() {
             <Route path="/blogs" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/analytics/:userId" element={<PublicAnalytics />} />
 
             {/* Auth Routes - Only accessible when not authenticated */}
             <Route
@@ -149,6 +152,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <AnalyticsDashboard />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Admin Routes - Require admin role */}
             <Route
@@ -167,12 +178,9 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             {/* Debug route for testing */}
-            <Route
-              path="/test-profile"
-              element={<EditProfile />}
-            />
+            <Route path="/test-profile" element={<EditProfile />} />
 
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />

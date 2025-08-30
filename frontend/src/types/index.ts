@@ -320,3 +320,83 @@ export interface ConfirmDialogProps {
   cancelText?: string;
   variant?: "danger" | "warning" | "info";
 }
+
+// Analytics Types
+export interface AnalyticsOverview {
+  totalBlogs: number;
+  totalViews: number;
+  totalLikes: number;
+  totalComments: number;
+  totalShares: number;
+  publishedBlogs: number;
+  draftBlogs: number;
+  pendingBlogs: number;
+  rejectedBlogs: number;
+  avgViewsPerBlog: number;
+  avgLikesPerBlog: number;
+  avgCommentsPerBlog: number;
+  engagementRate: number;
+}
+
+export interface BlogAnalytics {
+  blogId: string;
+  title: string;
+  slug: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  publishedAt: string;
+  engagementRate: number;
+  viewsOverTime: Array<{
+    date: string;
+    views: number;
+  }>;
+  likesOverTime: Array<{
+    date: string;
+    likes: number;
+  }>;
+  commentsOverTime: Array<{
+    date: string;
+    comments: number;
+  }>;
+}
+
+export interface BlogsAnalytics {
+  blogs: Array<{
+    _id: string;
+    title: string;
+    slug: string;
+    category: string;
+    views: number;
+    likes: number;
+    comments: number;
+    shares: number;
+    publishedAt: string;
+    engagementRate: number;
+  }>;
+  pagination: PaginationInfo;
+  totalViews: number;
+  totalLikes: number;
+  totalComments: number;
+  totalShares: number;
+  avgEngagementRate: number;
+}
+
+export interface CategoryAnalytics {
+  categories: Array<{
+    category: string;
+    blogCount: number;
+    totalViews: number;
+    totalLikes: number;
+    totalComments: number;
+    totalShares: number;
+    avgEngagementRate: number;
+    topBlog: {
+      title: string;
+      slug: string;
+      views: number;
+    };
+  }>;
+  totalCategories: number;
+}

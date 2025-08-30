@@ -109,7 +109,8 @@ const Navbar: React.FC = () => {
               {navLinks.map((link) => {
                 if (link.auth && !isAuthenticated) return null;
                 // Hide Write link for admin users
-                if (link.href === "/write" && user?.role === "admin") return null;
+                if (link.href === "/write" && user?.role === "admin")
+                  return null;
                 return (
                   <Link
                     key={link.href}
@@ -346,7 +347,8 @@ const Navbar: React.FC = () => {
                 {navLinks.map((link) => {
                   if (link.auth && !isAuthenticated) return null;
                   // Hide Write link for admin users
-                  if (link.href === "/write" && user?.role === "admin") return null;
+                  if (link.href === "/write" && user?.role === "admin")
+                    return null;
                   return (
                     <Link
                       key={link.href}
@@ -398,8 +400,12 @@ const Navbar: React.FC = () => {
                             )}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Admin Dashboard</p>
-                            <p className="text-sm text-gray-500">{user?.email}</p>
+                            <p className="font-medium text-gray-900">
+                              Admin Dashboard
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {user?.email}
+                            </p>
                           </div>
                         </div>
 
@@ -455,7 +461,9 @@ const Navbar: React.FC = () => {
                             <p className="font-medium text-gray-900">
                               {user?.fullName}
                             </p>
-                            <p className="text-sm text-gray-500">{user?.email}</p>
+                            <p className="text-sm text-gray-500">
+                              {user?.email}
+                            </p>
                           </div>
                         </div>
 
