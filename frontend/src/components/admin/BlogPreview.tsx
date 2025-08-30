@@ -114,41 +114,33 @@ const BlogPreview: React.FC<BlogPreviewProps> = ({ blog, isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Status Badge */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Status:</span>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  blog.status === "approved"
-                    ? "bg-green-100 text-green-800"
-                    : blog.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : blog.status === "rejected"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {blog.status}
-              </span>
-            </div>
-
-            {/* Category and Tags */}
+            {/* Status and Tags */}
             <div className="flex flex-wrap items-center gap-4">
-              {blog.category && (
-                <div className="flex items-center space-x-1">
-                  <Tag className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-700">
-                    {blog.category}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Status:</span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    blog.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : blog.status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : blog.status === "rejected"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {blog.status}
+                </span>
+              </div>
               {blog.tags && blog.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
+                  <span className="text-sm text-gray-600">Tags:</span>
                   {blog.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
+                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md flex items-center"
                     >
+                      <Tag className="h-3 w-3 mr-1 text-gray-500" />
                       #{tag}
                     </span>
                   ))}

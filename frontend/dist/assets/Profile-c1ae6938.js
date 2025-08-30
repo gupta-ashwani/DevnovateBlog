@@ -1,2 +1,0 @@
-import{l as e,n as s}from"./index-c8ecdaf5.js";const i=()=>e.jsx("div",{className:"min-h-screen bg-gray-50",children:e.jsx("div",{className:"max-w-4xl mx-auto px-4 py-12",children:e.jsxs(s.div,{initial:{opacity:0,y:30},animate:{opacity:1,y:0},className:"bg-white rounded-2xl shadow-lg p-8",children:[e.jsx("h1",{className:"text-3xl font-bold text-gray-900 mb-4",children:"User Profile"}),e.jsx("p",{className:"text-gray-600",children:"User profile page coming soon!"})]})})});export{i as default};
-//# sourceMappingURL=Profile-c1ae6938.js.map
