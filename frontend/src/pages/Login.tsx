@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -11,8 +11,19 @@ const Login: React.FC = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Effect to handle navigation after login
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -27,7 +38,7 @@ const Login: React.FC = () => {
 
     try {
       await login(formData);
-      navigate("/");
+      // Navigation will be handled by useEffect when user state updates
     } catch (error) {
       console.error("Login error:", error);
     } finally {

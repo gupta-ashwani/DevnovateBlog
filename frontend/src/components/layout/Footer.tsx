@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   PenTool,
-  Twitter,
+  Instagram,
   Github,
   Linkedin,
   Mail,
@@ -64,15 +64,19 @@ const Footer: React.FC = () => {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
-                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                  href="https://www.instagram.com/i.ashwani.gupta"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-600 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors"
                 >
-                  <Twitter className="w-5 h-5" />
+                  <Instagram className="w-5 h-5" />
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://github.com/gupta-ashwani"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <Github className="w-5 h-5" />
@@ -80,7 +84,9 @@ const Footer: React.FC = () => {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://www.linkedin.com/in/sukriti-saraswati-258451273/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                 >
                   <Linkedin className="w-5 h-5" />
@@ -88,7 +94,7 @@ const Footer: React.FC = () => {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="mailto:devnovateblog@gmail.com"
                   className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors"
                 >
                   <Mail className="w-5 h-5" />
