@@ -111,8 +111,8 @@ const Footer: React.FC = () => {
                 {[
                   { label: "Blogs", href: "/blogs" },
                   { label: "Write", href: "/write" },
-                  { label: "Community", href: "/community" },
-                  { label: "About", href: "/about" },
+                  { label: "Community", href: "/#" },
+                  { label: "About", href: "/#" },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link
@@ -133,10 +133,10 @@ const Footer: React.FC = () => {
               </h3>
               <ul className="space-y-4">
                 {[
-                  { label: "Help Center", href: "/help" },
-                  { label: "Guidelines", href: "/guidelines" },
-                  { label: "API", href: "/api" },
-                  { label: "Status", href: "/status" },
+                  { label: "Help Center", href: "/" },
+                  { label: "Guidelines", href: "/" },
+                  { label: "API", href: "/" },
+                  { label: "Status", href: "/" },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link
@@ -162,19 +162,19 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-6">
               <div className="flex items-center space-x-6">
                 <Link
-                  to="/privacy"
+                  to="/"
                   className="text-gray-600 hover:text-gray-900 text-sm transition-colors"
                 >
                   Privacy
                 </Link>
                 <Link
-                  to="/terms"
+                  to="/"
                   className="text-gray-600 hover:text-gray-900 text-sm transition-colors"
                 >
                   Terms
                 </Link>
                 <Link
-                  to="/cookies"
+                  to="/"
                   className="text-gray-600 hover:text-gray-900 text-sm transition-colors"
                 >
                   Cookies
