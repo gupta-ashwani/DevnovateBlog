@@ -35,7 +35,7 @@ app.use(
 app.use(express.json());
 
 // your routes
-app.use("/api", require("./routes/api"));
+// app.use("/api", require("./routes/api"));
 
 // start server
 app.listen(process.env.PORT || 5000, () => {
