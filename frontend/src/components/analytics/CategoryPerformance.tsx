@@ -11,12 +11,10 @@ interface CategoryPerformanceProps {
       totalLikes: number;
       totalComments: number;
       totalShares: number;
-      avgEngagementRate: number;
-      topBlog: {
-        title: string;
-        slug: string;
-        views: number;
-      };
+      avgViews: number;
+      avgLikes: number;
+      avgComments: number;
+      engagementRate: number;
     }>;
   };
 }
@@ -228,18 +226,18 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-xs text-gray-600 space-y-1">
-                      <div>{Math.round(category.totalViews / category.blogCount)} views/blog</div>
-                      <div>{Math.round(category.totalLikes / category.blogCount)} likes/blog</div>
-                      <div>{Math.round(category.totalComments / category.blogCount)} comments/blog</div>
+                      <div>{category.avgViews} views/blog</div>
+                      <div>{category.avgLikes} likes/blog</div>
+                      <div>{category.avgComments} comments/blog</div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded ${getEngagementColor(
-                        category.avgEngagementRate
+                        category.engagementRate
                       )}`}
                     >
-                      {category.avgEngagementRate.toFixed(1)}%
+                      {category.engagementRate.toFixed(1)}%
                     </span>
                   </td>
                 </motion.tr>
@@ -268,7 +266,7 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
             <div className="flex items-center">
               <TrendingUp className="h-6 w-6 text-green-600 mr-2" />
               <span className="text-2xl font-bold text-green-600">
-                {data.categories[0].avgEngagementRate.toFixed(1)}%
+                {data.categories[0].engagementRate.toFixed(1)}%
               </span>
             </div>
           </div>

@@ -17,12 +17,18 @@ interface BlogsPerformanceTableProps {
       title: string;
       slug: string;
       category: string;
-      views: number;
-      likes: number;
-      comments: number;
-      shares: number;
+      status: string;
       publishedAt: string;
-      engagementRate: number;
+      tags: string[];
+      readingTime: number;
+      metrics: {
+        views: number;
+        likes: number;
+        comments: number;
+        shares: number;
+        engagementRate: number;
+      };
+      createdAt: string;
     }>;
     pagination: {
       currentPage: number;
@@ -175,7 +181,7 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                   <div className="flex items-center">
                     <Eye className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.views.toLocaleString()}
+                      {blog.metrics.views.toLocaleString()}
                     </span>
                   </div>
                 </td>
@@ -183,7 +189,7 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                   <div className="flex items-center">
                     <Heart className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.likes.toLocaleString()}
+                      {blog.metrics.likes.toLocaleString()}
                     </span>
                   </div>
                 </td>
@@ -191,17 +197,17 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
                   <div className="flex items-center">
                     <MessageCircle className="w-4 h-4 text-gray-400 mr-1" />
                     <span className="text-sm text-gray-900">
-                      {blog.comments.toLocaleString()}
+                      {blog.metrics.comments.toLocaleString()}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-medium rounded ${getEngagementColor(
-                      blog.engagementRate
+                      blog.metrics.engagementRate
                     )}`}
                   >
-                    {blog.engagementRate.toFixed(1)}%
+                    {blog.metrics.engagementRate.toFixed(1)}%
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">

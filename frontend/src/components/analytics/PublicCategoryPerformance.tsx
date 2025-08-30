@@ -19,14 +19,11 @@ interface PublicCategoryPerformanceProps {
       totalLikes: number;
       totalComments: number;
       totalShares: number;
-      avgEngagementRate: number;
-      topBlog: {
-        title: string;
-        slug: string;
-        views: number;
-      };
+      avgViews: number;
+      avgLikes: number;
+      avgComments: number;
+      engagementRate: number;
     }>;
-    totalCategories: number;
   };
 }
 
@@ -66,7 +63,7 @@ const PublicCategoryPerformance: React.FC<PublicCategoryPerformanceProps> = ({
           Category Performance
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Performance metrics across {data.totalCategories} categories
+          Performance metrics across {data.categories.length} categories
         </p>
       </div>
 
@@ -98,10 +95,10 @@ const PublicCategoryPerformance: React.FC<PublicCategoryPerformanceProps> = ({
                 <div className="text-right">
                   <div
                     className={`text-sm font-medium ${getEngagementColor(
-                      category.avgEngagementRate
+                      category.engagementRate
                     )}`}
                   >
-                    {category.avgEngagementRate.toFixed(1)}% avg engagement
+                    {category.engagementRate.toFixed(1)}% avg engagement
                   </div>
                 </div>
               </div>
@@ -153,32 +150,6 @@ const PublicCategoryPerformance: React.FC<PublicCategoryPerformanceProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* Top Blog */}
-              {category.topBlog && (
-                <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                        Top performing blog:
-                      </p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                        {category.topBlog.title}
-                      </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {category.topBlog.views.toLocaleString()} views
-                      </p>
-                    </div>
-                    <Link
-                      to={`/blog/${category.topBlog.slug}`}
-                      className="ml-3 text-gray-400 hover:text-blue-600 transition-colors"
-                      title="View blog"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              )}
             </motion.div>
           ))}
         </div>

@@ -385,19 +385,20 @@ export interface BlogsAnalytics {
     title: string;
     slug: string;
     category: string;
-    views: number;
-    likes: number;
-    comments: number;
-    shares: number;
+    status: string;
     publishedAt: string;
-    engagementRate: number;
+    tags: string[];
+    readingTime: number;
+    metrics: {
+      views: number;
+      likes: number;
+      comments: number;
+      shares: number;
+      engagementRate: number;
+    };
+    createdAt: string;
   }>;
   pagination: PaginationInfo;
-  totalViews: number;
-  totalLikes: number;
-  totalComments: number;
-  totalShares: number;
-  avgEngagementRate: number;
 }
 
 export interface CategoryAnalytics {
@@ -408,12 +409,9 @@ export interface CategoryAnalytics {
     totalLikes: number;
     totalComments: number;
     totalShares: number;
-    avgEngagementRate: number;
-    topBlog: {
-      title: string;
-      slug: string;
-      views: number;
-    };
+    avgViews: number;
+    avgLikes: number;
+    avgComments: number;
+    engagementRate: number;
   }>;
-  totalCategories: number;
 }
