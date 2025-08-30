@@ -18,6 +18,30 @@ const uploadRoutes = require("./src/routes/upload");
 
 const app = express();
 
+const allowedOrigins = [
+  "https://devnovate-blog-liard.vercel.app/",
+  "http://localhost:5173",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
+
+// other middlewares
+app.use(express.json());
+
+// your routes
+app.use("/api", require("./routes/api"));
+
+// start server
+app.listen(process.env.PORT || 5000, () => {
+  console.log("Server running...");
+});
+
 // Security
 app.use(
   helmet({
