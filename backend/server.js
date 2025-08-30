@@ -27,8 +27,8 @@ app.use(
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   message: "Too many requests from this IP, please try again later.",
 });
 app.use("/api/", limiter);
@@ -36,10 +36,7 @@ app.use("/api/", limiter);
 // CORS configuration
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
-  : [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-      "http://localhost:3001",
-    ];
+  : [process.env.FRONTEND_URL || "http://localhost:3000"];
 
 app.use(
   cors({
@@ -58,17 +55,17 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // Session configuration for view tracking
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "supersecret",
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URL,
-      touchAfter: 24 * 3600, // lazy session update (24 hours)
+      touchAfter: 24 * 3600,
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
@@ -100,7 +97,7 @@ app.use("/api/upload", uploadRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "Devnovate Blog API is running!",
     timestamp: new Date().toISOString(),
@@ -110,7 +107,7 @@ app.get("/api/health", (req, res) => {
 
 // 404 handler
 app.use("*", (req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     status: "error",
     message: `Route ${req.originalUrl} not found`,
   });
@@ -142,7 +139,7 @@ app.use((err, req, res, next) => {
     });
   }
 
-  res.status(err.statusCode || 500).json({
+  return res.status(err.statusCode || 500).json({
     status: "error",
     message: err.message || "Internal Server Error",
   });
