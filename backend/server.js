@@ -18,9 +18,15 @@ const uploadRoutes = require("./src/routes/upload");
 
 const app = express();
 
+// ✅ Trust proxy (important for Render/Heroku)
+app.set("trust proxy", 1);
+
+// Allowed CORS origins
 const allowedOrigins = [
-  "https://devnovate-blog-liard.vercel.app/",
+  "https://devnovate-blog-liard.vercel.app",
   "http://localhost:5173",
+  process.env.FRONTEND_URL || "http://localhost:3000",
+  "http://localhost:3001",
 ];
 
 app.use(
@@ -31,10 +37,8 @@ app.use(
   })
 );
 
-// other middlewares
+// Core middlewares
 app.use(express.json());
-
-// Security
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -43,30 +47,15 @@ app.use(
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 min
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit per IP
   message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use("/api/", limiter);
 
-// CORS
-const corsOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
-  : [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-      "http://localhost:3001",
-    ];
-
-app.use(
-  cors({
-    origin: corsOrigins,
-    credentials: true,
-  })
-);
-
-// Compression + body parsing
+// Compression & body parsing
 app.use(compression());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -109,7 +98,21 @@ mongoose
     process.exit(1);
   });
 
-// Routes
+// ==============================
+// 📌 Routes
+// ==============================
+
+// ✅ Root route (for Render health check)
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Welcome to Devnovate Blog API 🚀",
+    health: "/api/health",
+    docs: "/api",
+  });
+});
+
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/comments", commentRoutes);
@@ -127,7 +130,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler (ensure single response)
+// 404 handler
 app.all("*", (req, res) => {
   if (!res.headersSent) {
     return res.status(404).json({
@@ -137,12 +140,12 @@ app.all("*", (req, res) => {
   }
 });
 
-// Global error handler (ensure single response)
+// Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
 
   if (res.headersSent) {
-    return next(err); // delegate to default Express handler
+    return next(err);
   }
 
   if (err.name === "ValidationError") {
@@ -173,6 +176,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
