@@ -242,6 +242,41 @@ const refreshToken = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Google OAuth callback
+// @route   GET /api/auth/google/callback
+// @access  Public
+const googleCallback = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=auth_failed`
+      );
+    }
+
+    // Generate JWT token
+    const token = generateToken(user._id);
+
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save();
+
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+  } catch (error) {
+    console.error("Google OAuth callback error:", error);
+    res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+  }
+});
+
+// @desc    Google OAuth failure
+// @route   GET /api/auth/google/failure
+// @access  Public
+const googleFailure = asyncHandler(async (req, res) => {
+  res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
+});
+
 module.exports = {
   register,
   login,
@@ -250,4 +285,6 @@ module.exports = {
   changePassword,
   logout,
   refreshToken,
+  googleCallback,
+  googleFailure,
 };

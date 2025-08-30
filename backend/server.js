@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,7 +9,7 @@ const compression = require("compression");
 const morgan = require("morgan");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-require("dotenv").config();
+const passport = require("./src/config/passport");
 
 const authRoutes = require("./src/routes/auth");
 const blogRoutes = require("./src/routes/blogs");
@@ -78,6 +80,10 @@ app.use(
     },
   })
 );
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Logging
 if (process.env.NODE_ENV === "development") {

@@ -31,6 +31,7 @@ interface AuthContextType extends AuthState {
   logout: () => void;
   updateUser: (user: User) => void;
   clearError: () => void;
+  setUserFromToken: (user: User) => void;
 }
 
 const initialState: AuthState = {
@@ -203,6 +204,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: "CLEAR_ERROR" });
   };
 
+  const setUserFromToken = (user: User) => {
+    dispatch({ type: "AUTH_SUCCESS", payload: user });
+  };
+
   const value: AuthContextType = {
     ...state,
     login,
@@ -210,6 +215,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     clearError,
+    setUserFromToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

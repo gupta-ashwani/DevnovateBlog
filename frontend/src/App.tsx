@@ -20,6 +20,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
 const PublicAnalytics = lazy(() => import("./pages/PublicAnalytics"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Protected Route Component
@@ -100,6 +101,9 @@ function App() {
             <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/profile/:username" element={<Profile />} />
             <Route path="/analytics/:userId" element={<PublicAnalytics />} />
+
+            {/* Auth Callback Route */}
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* Auth Routes - Only accessible when not authenticated */}
             <Route

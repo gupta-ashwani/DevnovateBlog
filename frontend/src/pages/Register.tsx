@@ -5,6 +5,7 @@ import { ArrowLeft, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 import PasswordStrength from "@/components/ui/PasswordStrength";
+import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -273,6 +274,27 @@ const Register: React.FC = () => {
               </button>
             </div>
           </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <GoogleAuthButton
+                isLoading={isLoading}
+                disabled={isLoading}
+                text="Sign up with Google"
+              />
+            </div>
+          </div>
 
           <div className="mt-6">
             <div className="relative">
