@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
+import PasswordStrength from "@/components/ui/PasswordStrength";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -27,11 +28,27 @@ const Register: React.FC = () => {
     });
   };
 
+  const validatePassword = (password: string) => {
+    const requirements = [
+      /[A-Z]/.test(password), // uppercase
+      /[a-z]/.test(password), // lowercase
+      /\d/.test(password), // number
+      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), // special char
+      password.length >= 8, // minimum length
+    ];
+    return requirements.every(Boolean);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      toast.error("Password does not meet security requirements");
       return;
     }
 
@@ -200,6 +217,7 @@ const Register: React.FC = () => {
                   )}
                 </button>
               </div>
+              <PasswordStrength password={formData.password} />
             </div>
 
             <div>
@@ -240,8 +258,12 @@ const Register: React.FC = () => {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 transition-colors"
+                disabled={
+                  isLoading ||
+                  !validatePassword(formData.password) ||
+                  formData.password !== formData.confirmPassword
+                }
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
