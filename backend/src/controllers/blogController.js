@@ -11,7 +11,6 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 12,
-    category,
     tag,
     author,
     search,
@@ -23,7 +22,6 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   const query = { status: "approved" };
 
   // Apply filters
-  if (category) query.category = category;
   if (tag) query.tags = { $in: [tag] };
   if (author) query.author = author;
   if (search) {

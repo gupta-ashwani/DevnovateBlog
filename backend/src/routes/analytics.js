@@ -1,12 +1,9 @@
 const express = require("express");
 const {
   getUserAnalyticsOverview,
-  getBlogAnalytics,
   getAllBlogsAnalytics,
-  getCategoryAnalytics,
   getPublicUserAnalytics,
   getPublicUserBlogsAnalytics,
-  getPublicUserCategoryAnalytics,
 } = require("../controllers/analyticsController");
 const { authenticateToken } = require("../middleware/auth");
 
@@ -23,11 +20,6 @@ router.get("/user/:userId/overview", getPublicUserAnalytics);
 // @access  Public
 router.get("/user/:userId/blogs", getPublicUserBlogsAnalytics);
 
-// @route   GET /api/analytics/user/:userId/categories
-// @desc    Get category analytics for any user
-// @access  Public
-router.get("/user/:userId/categories", getPublicUserCategoryAnalytics);
-
 // Protected routes (require authentication)
 router.use(authenticateToken);
 
@@ -40,15 +32,5 @@ router.get("/overview", getUserAnalyticsOverview);
 // @desc    Get analytics for all user's blogs
 // @access  Private
 router.get("/blogs", getAllBlogsAnalytics);
-
-// @route   GET /api/analytics/blog/:blogId
-// @desc    Get detailed analytics for a specific blog
-// @access  Private
-router.get("/blog/:blogId", getBlogAnalytics);
-
-// @route   GET /api/analytics/categories
-// @desc    Get category performance analytics
-// @access  Private
-router.get("/categories", getCategoryAnalytics);
 
 module.exports = router;

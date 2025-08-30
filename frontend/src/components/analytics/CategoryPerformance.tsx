@@ -60,7 +60,9 @@ const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
             <div className="flex items-center">
               <MessageCircle className="h-8 w-8 text-purple-600" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-600">Total Comments</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Comments
+                </p>
                 <p className="text-xl font-bold text-gray-900">0</p>
               </div>
             </div>

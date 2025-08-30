@@ -38,7 +38,6 @@ export interface Blog {
   author: User;
   featuredImage: string;
   tags: string[];
-  category: BlogCategory;
   status: BlogStatus;
   publishedAt?: string;
   metrics: {
@@ -106,20 +105,6 @@ export type BlogStatus =
   | "approved"
   | "rejected"
   | "hidden";
-
-export type BlogCategory =
-  | "Technology"
-  | "Programming"
-  | "AI/ML"
-  | "Web Development"
-  | "Mobile Development"
-  | "DevOps"
-  | "Database"
-  | "Security"
-  | "Tutorial"
-  | "Opinion"
-  | "News"
-  | "Other";
 
 export interface AuthResponse {
   status: "success" | "error";
@@ -201,7 +186,6 @@ export interface CreateBlogData {
   title: string;
   content: string;
   excerpt?: string;
-  category: BlogCategory;
   tags: string[];
   featuredImage?: string;
   status?: BlogStatus;
@@ -256,7 +240,6 @@ export interface LoginData {
 }
 
 export interface SearchFilters {
-  category?: BlogCategory;
   tag?: string;
   author?: string;
   search?: string;
@@ -276,7 +259,6 @@ export interface BlogFormData {
   title: string;
   content: string;
   excerpt: string;
-  category: BlogCategory;
   tags: string[];
   featuredImage: string;
   seo: {
@@ -384,7 +366,6 @@ export interface BlogsAnalytics {
     _id: string;
     title: string;
     slug: string;
-    category: string;
     status: string;
     publishedAt: string;
     tags: string[];
@@ -399,19 +380,4 @@ export interface BlogsAnalytics {
     createdAt: string;
   }>;
   pagination: PaginationInfo;
-}
-
-export interface CategoryAnalytics {
-  categories: Array<{
-    category: string;
-    blogCount: number;
-    totalViews: number;
-    totalLikes: number;
-    totalComments: number;
-    totalShares: number;
-    avgViews: number;
-    avgLikes: number;
-    avgComments: number;
-    engagementRate: number;
-  }>;
 }

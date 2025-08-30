@@ -165,7 +165,6 @@ const getPublicUserAnalytics = asyncHandler(async (req, res) => {
       comments: blog.metrics?.comments || 0,
       publishedAt: blog.publishedAt,
       status: blog.status,
-      category: blog.category,
       tags: blog.tags.slice(0, 3), // Limit tags for display
     }));
 
@@ -272,7 +271,7 @@ const getPublicUserBlogsAnalytics = asyncHandler(async (req, res) => {
 
   // Only get published blogs for public view
   const blogs = await Blog.find({ author: userId, status: "approved" })
-    .select("title slug publishedAt metrics category tags readingTime")
+    .select("title slug publishedAt metrics tags readingTime")
     .sort(sortOptions)
     .skip(skip)
     .limit(parseInt(limit));
@@ -298,7 +297,6 @@ const getPublicUserBlogsAnalytics = asyncHandler(async (req, res) => {
       title: blog.title,
       slug: blog.slug,
       publishedAt: blog.publishedAt,
-      category: blog.category,
       tags: blog.tags,
       readingTime: blog.readingTime,
       metrics: {
@@ -332,235 +330,7 @@ const getPublicUserBlogsAnalytics = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get any user's category analytics
-// @route   GET /api/analytics/user/:userId/categories
-// @access  Public
-const getPublicUserCategoryAnalytics = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-
-  // Verify user exists
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({
-      status: "error",
-      message: "User not found",
-    });
-  }
-
-  const categoryStats = await Blog.aggregate([
-    {
-      $match: { author: userId, status: "approved" },
-    },
-    {
-      $group: {
-        _id: "$category",
-        blogCount: { $sum: 1 },
-        totalViews: { $sum: "$metrics.views" },
-        totalLikes: { $sum: "$metrics.likes" },
-        totalComments: { $sum: "$metrics.comments" },
-        avgViews: { $avg: "$metrics.views" },
-        avgLikes: { $avg: "$metrics.likes" },
-        avgComments: { $avg: "$metrics.comments" },
-      },
-    },
-    {
-      $sort: { totalViews: -1 },
-    },
-  ]);
-
-  const formattedStats = categoryStats.map((stat) => ({
-    category: stat._id,
-    blogCount: stat.blogCount,
-    totalViews: stat.totalViews || 0,
-    totalLikes: stat.totalLikes || 0,
-    totalComments: stat.totalComments || 0,
-    avgViews: Math.round(stat.avgViews || 0),
-    avgLikes: Math.round(stat.avgLikes || 0),
-    avgComments: Math.round(stat.avgComments || 0),
-    engagementRate:
-      stat.totalViews > 0
-        ? (
-            ((stat.totalLikes + stat.totalComments) / stat.totalViews) *
-            100
-          ).toFixed(2)
-        : 0,
-  }));
-
-  res.json({
-    status: "success",
-    data: {
-      user: {
-        _id: user._id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      },
-      categories: formattedStats,
-    },
-  });
-});
-
-// @desc    Get detailed blog analytics
-// @route   GET /api/analytics/blog/:blogId
-// @access  Private
-const getBlogAnalytics = asyncHandler(async (req, res) => {
-  const { blogId } = req.params;
-  const userId = req.user._id;
-
-  const blog = await Blog.findById(blogId).populate(
-    "author",
-    "username firstName lastName"
-  );
-
-  if (!blog) {
-    return res.status(404).json({
-      status: "error",
-      message: "Blog not found",
-    });
-  }
-
-  // Check if user owns the blog or is admin
-  if (
-    blog.author._id.toString() !== userId.toString() &&
-    req.user.role !== "admin"
-  ) {
-    return res.status(403).json({
-      status: "error",
-      message: "Not authorized to view these analytics",
-    });
-  }
-
-  // Get engagement over time (last 30 days)
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  // Get daily engagement data
-  const dailyEngagement = await Promise.all([
-    // Likes per day
-    Like.aggregate([
-      {
-        $match: {
-          blog: blog._id,
-          createdAt: { $gte: thirtyDaysAgo },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
-          },
-          likes: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 },
-      },
-    ]),
-    // Comments per day
-    Comment.aggregate([
-      {
-        $match: {
-          blog: blog._id,
-          createdAt: { $gte: thirtyDaysAgo },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
-          },
-          comments: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 },
-      },
-    ]),
-  ]);
-
-  // Get top commenters
-  const topCommenters = await Comment.aggregate([
-    {
-      $match: { blog: blog._id },
-    },
-    {
-      $group: {
-        _id: "$author",
-        commentCount: { $sum: 1 },
-      },
-    },
-    {
-      $sort: { commentCount: -1 },
-    },
-    {
-      $limit: 5,
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "_id",
-        foreignField: "_id",
-        as: "user",
-      },
-    },
-    {
-      $unwind: "$user",
-    },
-    {
-      $project: {
-        username: "$user.username",
-        firstName: "$user.firstName",
-        lastName: "$user.lastName",
-        commentCount: 1,
-      },
-    },
-  ]);
-
-  // Calculate engagement rate
-  const engagementRate =
-    blog.metrics.views > 0
-      ? (
-          ((blog.metrics.likes + blog.metrics.comments) / blog.metrics.views) *
-          100
-        ).toFixed(2)
-      : 0;
-
-  res.json({
-    status: "success",
-    data: {
-      blog: {
-        _id: blog._id,
-        title: blog.title,
-        slug: blog.slug,
-        publishedAt: blog.publishedAt,
-        status: blog.status,
-        category: blog.category,
-        tags: blog.tags,
-        readingTime: blog.readingTime,
-      },
-      metrics: {
-        views: blog.metrics.views || 0,
-        likes: blog.metrics.likes || 0,
-        comments: blog.metrics.comments || 0,
-        shares: blog.metrics.shares || 0,
-        engagementRate: parseFloat(engagementRate),
-      },
-      engagement: {
-        daily: {
-          likes: dailyEngagement[0],
-          comments: dailyEngagement[1],
-        },
-        topCommenters,
-      },
-    },
-  });
-});
-
-// @desc    Get analytics for all user's blogs
+// @desc    Get all blogs analytics for authenticated user
 // @route   GET /api/analytics/blogs
 // @access  Private
 const getAllBlogsAnalytics = asyncHandler(async (req, res) => {
@@ -572,30 +342,30 @@ const getAllBlogsAnalytics = asyncHandler(async (req, res) => {
     sortOrder = "desc",
   } = req.query;
 
-  const skip = (page - 1) * limit;
-  const sortOptions = {};
-  const sortField =
-    sortBy === "views"
-      ? "metrics.views"
-      : sortBy === "likes"
-      ? "metrics.likes"
-      : sortBy === "comments"
-      ? "metrics.comments"
-      : "createdAt";
+  // Build sort object
+  const sort = {};
+  if (sortBy === "views") {
+    sort["metrics.views"] = sortOrder === "asc" ? 1 : -1;
+  } else if (sortBy === "likes") {
+    sort["metrics.likes"] = sortOrder === "asc" ? 1 : -1;
+  } else if (sortBy === "comments") {
+    sort["metrics.comments"] = sortOrder === "asc" ? 1 : -1;
+  } else if (sortBy === "createdAt") {
+    sort.createdAt = sortOrder === "asc" ? 1 : -1;
+  }
 
-  sortOptions[sortField] = sortOrder === "desc" ? -1 : 1;
-
-  const blogs = await Blog.find({ author: userId })
-    .select(
-      "title slug status publishedAt metrics category tags readingTime createdAt"
-    )
-    .sort(sortOptions)
-    .skip(skip)
-    .limit(parseInt(limit));
-
+  // Get user's blogs with pagination
   const total = await Blog.countDocuments({ author: userId });
+  const blogs = await Blog.find({ author: userId })
+    .populate("author", "username firstName lastName")
+    .sort(sort)
+    .skip((page - 1) * limit)
+    .limit(parseInt(limit))
+    .select(
+      "_id title slug status publishedAt tags readingTime metrics createdAt"
+    );
 
-  // Calculate performance metrics for each blog
+  // Format blogs with analytics
   const blogsWithMetrics = blogs.map((blog) => {
     const engagementRate =
       blog.metrics.views > 0
@@ -612,7 +382,6 @@ const getAllBlogsAnalytics = asyncHandler(async (req, res) => {
       slug: blog.slug,
       status: blog.status,
       publishedAt: blog.publishedAt,
-      category: blog.category,
       tags: blog.tags,
       readingTime: blog.readingTime,
       metrics: {
@@ -641,65 +410,9 @@ const getAllBlogsAnalytics = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get category performance analytics
-// @route   GET /api/analytics/categories
-// @access  Private
-const getCategoryAnalytics = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-
-  const categoryStats = await Blog.aggregate([
-    {
-      $match: { author: userId },
-    },
-    {
-      $group: {
-        _id: "$category",
-        blogCount: { $sum: 1 },
-        totalViews: { $sum: "$metrics.views" },
-        totalLikes: { $sum: "$metrics.likes" },
-        totalComments: { $sum: "$metrics.comments" },
-        avgViews: { $avg: "$metrics.views" },
-        avgLikes: { $avg: "$metrics.likes" },
-        avgComments: { $avg: "$metrics.comments" },
-      },
-    },
-    {
-      $sort: { totalViews: -1 },
-    },
-  ]);
-
-  const formattedStats = categoryStats.map((stat) => ({
-    category: stat._id,
-    blogCount: stat.blogCount,
-    totalViews: stat.totalViews || 0,
-    totalLikes: stat.totalLikes || 0,
-    totalComments: stat.totalComments || 0,
-    avgViews: Math.round(stat.avgViews || 0),
-    avgLikes: Math.round(stat.avgLikes || 0),
-    avgComments: Math.round(stat.avgComments || 0),
-    engagementRate:
-      stat.totalViews > 0
-        ? (
-            ((stat.totalLikes + stat.totalComments) / stat.totalViews) *
-            100
-          ).toFixed(2)
-        : 0,
-  }));
-
-  res.json({
-    status: "success",
-    data: {
-      categories: formattedStats,
-    },
-  });
-});
-
 module.exports = {
   getUserAnalyticsOverview,
-  getBlogAnalytics,
   getAllBlogsAnalytics,
-  getCategoryAnalytics,
   getPublicUserAnalytics,
   getPublicUserBlogsAnalytics,
-  getPublicUserCategoryAnalytics,
 };

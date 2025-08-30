@@ -15,24 +15,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { blogService } from "@/services/blog";
-import { BlogCategory, BlogStatus } from "@/types";
+import { BlogStatus } from "@/types";
 import ImageUpload from "@/components/ImageUpload";
 import MarkdownEditor from "@/components/MarkdownEditor";
-
-const categories = [
-  "Technology",
-  "Programming",
-  "AI/ML",
-  "Web Development",
-  "Mobile Development",
-  "DevOps",
-  "Database",
-  "Security",
-  "Tutorial",
-  "Opinion",
-  "News",
-  "Other",
-];
 
 interface BlogEditorProps {
   mode?: "create" | "edit";
@@ -51,7 +36,6 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
     title: "",
     content: "",
     excerpt: "",
-    category: "Other" as BlogCategory,
     tags: [] as string[],
     featuredImage: "",
     status: "draft" as BlogStatus,
@@ -334,34 +318,11 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               </motion.div>
             )}
 
-            {/* Category */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
-            >
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Category
-              </label>
-              <select
-                value={blogData.category}
-                onChange={(e) => handleInputChange("category", e.target.value)}
-                className="w-full border border-gray-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </motion.div>
-
             {/* Tags */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.3 }}
               className="bg-white rounded-xl border border-gray-200 p-6"
             >
               <label className="block text-sm font-medium text-gray-700 mb-3">

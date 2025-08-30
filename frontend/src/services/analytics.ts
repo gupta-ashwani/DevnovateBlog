@@ -1,10 +1,5 @@
 import { apiRequest } from "./api";
-import {
-  AnalyticsOverview,
-  BlogAnalytics,
-  BlogsAnalytics,
-  CategoryAnalytics,
-} from "../types";
+import { AnalyticsOverview, BlogAnalytics, BlogsAnalytics } from "../types";
 
 const analyticsService = {
   // Get user's analytics overview
@@ -30,12 +25,6 @@ const analyticsService = {
       .get<BlogsAnalytics>("/analytics/blogs", params)
       .then((res) => res.data!),
 
-  // Get category performance analytics
-  getCategoryAnalytics: (): Promise<CategoryAnalytics> =>
-    apiRequest
-      .get<CategoryAnalytics>("/analytics/categories")
-      .then((res) => res.data!),
-
   // Public analytics functions (no authentication required)
 
   // Get public analytics overview for any user
@@ -56,14 +45,6 @@ const analyticsService = {
   ): Promise<BlogsAnalytics> =>
     apiRequest
       .get<BlogsAnalytics>(`/analytics/user/${userId}/blogs`, params)
-      .then((res) => res.data!),
-
-  // Get public category analytics for any user
-  getPublicUserCategoryAnalytics: (
-    userId: string
-  ): Promise<CategoryAnalytics> =>
-    apiRequest
-      .get<CategoryAnalytics>(`/analytics/user/${userId}/categories`)
       .then((res) => res.data!),
 };
 

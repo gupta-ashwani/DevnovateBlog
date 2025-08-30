@@ -39,25 +39,6 @@ const blogSchema = new mongoose.Schema(
         lowercase: true,
       },
     ],
-    category: {
-      type: String,
-      required: [true, "Category is required"],
-      enum: [
-        "Technology",
-        "Programming",
-        "AI/ML",
-        "Web Development",
-        "Mobile Development",
-        "DevOps",
-        "Database",
-        "Security",
-        "Tutorial",
-        "Opinion",
-        "News",
-        "Other",
-      ],
-      default: "Other",
-    },
     status: {
       type: String,
       enum: ["draft", "pending", "approved", "rejected", "hidden"],
@@ -234,7 +215,6 @@ blogSchema.statics.searchBlogs = function (query, options = {}) {
       { title: { $regex: query, $options: "i" } },
       { content: { $regex: query, $options: "i" } },
       { tags: { $in: [new RegExp(query, "i")] } },
-      { category: { $regex: query, $options: "i" } },
     ],
   };
 
@@ -251,7 +231,6 @@ blogSchema.index({ author: 1 });
 blogSchema.index({ status: 1 });
 blogSchema.index({ publishedAt: -1 });
 blogSchema.index({ trendingScore: -1 });
-blogSchema.index({ category: 1 });
 blogSchema.index({ tags: 1 });
 blogSchema.index({ title: "text", content: "text" });
 

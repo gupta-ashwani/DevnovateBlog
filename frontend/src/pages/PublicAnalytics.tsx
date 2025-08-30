@@ -13,12 +13,11 @@ import {
 } from "lucide-react";
 import analyticsService from "../services/analytics";
 import { userService } from "../services/user";
-import { AnalyticsOverview, BlogsAnalytics, CategoryAnalytics } from "../types";
+import { AnalyticsOverview, BlogsAnalytics } from "../types";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import AnalyticsOverviewCards from "../components/analytics/AnalyticsOverviewCards";
 import TopPerformingBlogs from "../components/analytics/TopPerformingBlogs";
 import PublicBlogsTable from "../components/analytics/PublicBlogsTable";
-import PublicCategoryPerformance from "../components/analytics/PublicCategoryPerformance";
 
 const PublicAnalytics: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -28,14 +27,10 @@ const PublicAnalytics: React.FC = () => {
   const [blogsAnalytics, setBlogsAnalytics] = useState<BlogsAnalytics | null>(
     null
   );
-  const [categoryAnalytics, setCategoryAnalytics] =
-    useState<CategoryAnalytics | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "blogs" | "categories"
-  >("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "blogs">("overview");
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -53,7 +48,7 @@ const PublicAnalytics: React.FC = () => {
         setUserProfile(profile);
 
         // Fetch analytics data in parallel
-        const [overviewData, blogsData, categoryData] = await Promise.all([
+        const [overviewData, blogsData] = await Promise.all([
           analyticsService.getPublicUserAnalytics(userId),
           analyticsService.getPublicUserBlogsAnalytics(userId, {
             page: 1,
@@ -61,12 +56,10 @@ const PublicAnalytics: React.FC = () => {
             sortBy: "views",
             sortOrder: "desc",
           }),
-          analyticsService.getPublicUserCategoryAnalytics(userId),
         ]);
 
         setOverview(overviewData);
         setBlogsAnalytics(blogsData);
-        setCategoryAnalytics(categoryData);
       } catch (err: any) {
         console.error("Error fetching public analytics:", err);
         setError(
@@ -80,7 +73,7 @@ const PublicAnalytics: React.FC = () => {
     fetchAnalytics();
   }, [userId]);
 
-  const handleTabChange = (tab: "overview" | "blogs" | "categories") => {
+  const handleTabChange = (tab: "overview" | "blogs") => {
     setActiveTab(tab);
   };
 
@@ -190,7 +183,6 @@ const PublicAnalytics: React.FC = () => {
         {[
           { key: "overview", label: "Overview", icon: TrendingUp },
           { key: "blogs", label: "Blog Performance", icon: BarChart3 },
-          { key: "categories", label: "Categories", icon: User },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -218,17 +210,15 @@ const PublicAnalytics: React.FC = () => {
           <div className="space-y-8">
             <AnalyticsOverviewCards overview={overview.overview} />
             {overview.topPerformingBlogs && (
-              <TopPerformingBlogs blogs={overview.topPerformingBlogs.slice(0, 5)} />
+              <TopPerformingBlogs
+                blogs={overview.topPerformingBlogs.slice(0, 5)}
+              />
             )}
           </div>
         )}
 
         {activeTab === "blogs" && blogsAnalytics && (
           <PublicBlogsTable data={blogsAnalytics} />
-        )}
-
-        {activeTab === "categories" && categoryAnalytics && (
-          <PublicCategoryPerformance data={categoryAnalytics} />
         )}
       </motion.div>
 

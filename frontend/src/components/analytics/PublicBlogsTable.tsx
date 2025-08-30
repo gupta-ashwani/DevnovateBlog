@@ -9,7 +9,6 @@ interface PublicBlogsTableProps {
       _id: string;
       title: string;
       slug: string;
-      category: string;
       status: string;
       publishedAt: string;
       tags: string[];
@@ -116,7 +115,7 @@ const PublicBlogsTable: React.FC<PublicBlogsTableProps> = ({ data }) => {
                       {blog.title}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {blog.category}
+                      {blog.readingTime} min read
                     </div>
                   </div>
                 </td>

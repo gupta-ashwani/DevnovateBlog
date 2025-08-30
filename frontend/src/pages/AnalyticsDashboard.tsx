@@ -13,11 +13,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import analyticsService from "@/services/analytics";
-import { AnalyticsOverview, BlogsAnalytics, CategoryAnalytics } from "@/types";
+import { AnalyticsOverview, BlogsAnalytics } from "@/types";
 import AnalyticsOverviewCards from "../components/analytics/AnalyticsOverviewCards";
 import TopPerformingBlogs from "../components/analytics/TopPerformingBlogs";
 import BlogsPerformanceTable from "../components/analytics/BlogsPerformanceTable";
-import CategoryPerformance from "../components/analytics/CategoryPerformance";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import toast from "react-hot-toast";
 
@@ -25,9 +24,6 @@ const AnalyticsDashboard: React.FC = () => {
   const { user } = useAuth();
   const [overview, setOverview] = useState<AnalyticsOverview | null>(null);
   const [blogsAnalytics, setBlogsAnalytics] = useState<BlogsAnalytics | null>(
-    null
-  );
-  const [categoryStats, setCategoryStats] = useState<CategoryAnalytics | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +44,7 @@ const AnalyticsDashboard: React.FC = () => {
     try {
       setIsLoading(true);
 
-      const [overviewData, blogsData, categoryData] = await Promise.all([
+      const [overviewData, blogsData] = await Promise.all([
         analyticsService.getAnalyticsOverview(),
         analyticsService.getAllBlogsAnalytics({
           page: 1,
@@ -56,12 +52,10 @@ const AnalyticsDashboard: React.FC = () => {
           sortBy: blogsSortBy,
           sortOrder: blogsSortOrder,
         }),
-        analyticsService.getCategoryAnalytics(),
       ]);
 
       setOverview(overviewData);
       setBlogsAnalytics(blogsData);
-      setCategoryStats(categoryData);
     } catch (error) {
       console.error("Error fetching analytics:", error);
       toast.error("Failed to load analytics data");
@@ -85,7 +79,6 @@ const AnalyticsDashboard: React.FC = () => {
       topBlogs: overview.topPerformingBlogs,
       recentActivity: overview.recentActivity,
       allBlogs: blogsAnalytics.blogs,
-      categories: categoryStats?.categories || [],
       exportedAt: new Date().toISOString(),
     };
 
@@ -171,10 +164,6 @@ const AnalyticsDashboard: React.FC = () => {
       },
     };
 
-    const emptyCategoryStats = {
-      categories: [],
-    };
-
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
@@ -211,16 +200,6 @@ const AnalyticsDashboard: React.FC = () => {
               >
                 Blog Performance
               </button>
-              <button
-                onClick={() => setActiveTab("categories")}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  activeTab === "categories"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                Categories
-              </button>
             </div>
           </div>
 
@@ -252,16 +231,6 @@ const AnalyticsDashboard: React.FC = () => {
                 />
               </motion.div>
             )}
-
-            {activeTab === "categories" && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <CategoryPerformance data={emptyCategoryStats} />
-              </motion.div>
-            )}
           </div>
         </div>
       </div>
@@ -271,7 +240,6 @@ const AnalyticsDashboard: React.FC = () => {
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "blogs", label: "Blog Performance", icon: TrendingUp },
-    { id: "categories", label: "Categories", icon: Filter },
   ];
 
   return (
@@ -383,10 +351,6 @@ const AnalyticsDashboard: React.FC = () => {
               sortOrder={blogsSortOrder}
               onSortChange={handleBlogsSortChange}
             />
-          )}
-
-          {activeTab === "categories" && categoryStats && (
-            <CategoryPerformance data={categoryStats} />
           )}
         </motion.div>
       </div>
