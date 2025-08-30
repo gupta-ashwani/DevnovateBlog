@@ -85,12 +85,95 @@ const BlogsPerformanceTable: React.FC<BlogsPerformanceTableProps> = ({
 
   if (data.blogs.length === 0) {
     return (
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Blog Performance
-        </h3>
-        <div className="text-center py-8">
-          <p className="text-gray-500">No blogs available</p>
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Blog Performance
+          </h3>
+          <div className="text-sm text-gray-500">
+            Total: 0 blogs
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button className="flex items-center space-x-1 hover:text-gray-700">
+                    <span>Title</span>
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                  <button className="flex items-center space-x-1 hover:text-gray-700">
+                    <span>Views</span>
+                    <ArrowUpDown className="h-3 w-3" />
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                  <button className="flex items-center space-x-1 hover:text-gray-700">
+                    <span>Likes</span>
+                    <ArrowUpDown className="h-3 w-3" />
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                  <button className="flex items-center space-x-1 hover:text-gray-700">
+                    <span>Comments</span>
+                    <ArrowUpDown className="h-3 w-3" />
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Engagement
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <tr>
+                <td colSpan={8} className="px-6 py-12 text-center">
+                  <Edit className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 text-lg mb-2">No blogs yet</p>
+                  <p className="text-gray-400 text-sm">
+                    Create your first blog to see performance metrics
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination showing zeros */}
+        <div className="px-6 py-3 border-t border-gray-200 flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Showing <span className="font-medium">0</span> to{" "}
+            <span className="font-medium">0</span> of{" "}
+            <span className="font-medium">0</span> results
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              disabled
+              className="px-3 py-1 text-sm bg-gray-100 text-gray-400 rounded cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <span className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded">
+              1
+            </span>
+            <button
+              disabled
+              className="px-3 py-1 text-sm bg-gray-100 text-gray-400 rounded cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     );

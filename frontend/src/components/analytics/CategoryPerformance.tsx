@@ -20,14 +20,78 @@ interface CategoryPerformanceProps {
 }
 
 const CategoryPerformance: React.FC<CategoryPerformanceProps> = ({ data }) => {
-  if (data.categories.length === 0) {
+  // If no categories, show zero state with overview cards showing 0
+  if (!data || !data.categories || data.categories.length === 0) {
     return (
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Category Performance
-        </h3>
-        <div className="text-center py-8">
-          <p className="text-gray-500">No category data available</p>
+      <div className="space-y-6">
+        {/* Overview Cards with Zeros */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center">
+              <BarChart3 className="h-8 w-8 text-blue-600" />
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">Categories</p>
+                <p className="text-xl font-bold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center">
+              <Eye className="h-8 w-8 text-green-600" />
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">Total Views</p>
+                <p className="text-xl font-bold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center">
+              <Heart className="h-8 w-8 text-red-600" />
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">Total Likes</p>
+                <p className="text-xl font-bold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center">
+              <MessageCircle className="h-8 w-8 text-purple-600" />
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">Total Comments</p>
+                <p className="text-xl font-bold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Empty Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Performance by Category
+            </h3>
+          </div>
+          <div className="text-center py-12">
+            <BarChart3 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg mb-2">No categories yet</p>
+            <p className="text-gray-400 text-sm">
+              Create and publish blogs to see category performance
+            </p>
+          </div>
+        </div>
+
+        {/* Best Performing Category - Empty State */}
+        <div className="bg-white rounded-lg p-6 border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Best Performing Category
+          </h3>
+          <div className="text-center py-8">
+            <TrendingUp className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500">No category data available</p>
+          </div>
         </div>
       </div>
     );

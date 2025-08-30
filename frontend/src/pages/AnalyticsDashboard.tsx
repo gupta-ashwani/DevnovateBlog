@@ -135,15 +135,134 @@ const AnalyticsDashboard: React.FC = () => {
   }
 
   if (!overview) {
+    // Show zero state dashboard instead of "No Analytics Data"
+    const emptyOverview = {
+      overview: {
+        totalBlogs: 0,
+        totalViews: 0,
+        totalLikes: 0,
+        totalComments: 0,
+        totalShares: 0,
+        publishedBlogs: 0,
+        draftBlogs: 0,
+        pendingBlogs: 0,
+        rejectedBlogs: 0,
+        avgViewsPerBlog: 0,
+        avgLikesPerBlog: 0,
+        avgCommentsPerBlog: 0,
+        engagementRate: 0,
+      },
+      topPerformingBlogs: [],
+      recentActivity: {
+        newBlogs: 0,
+        newLikes: 0,
+        newComments: 0,
+      },
+    };
+
+    const emptyBlogsAnalytics = {
+      blogs: [],
+      pagination: {
+        currentPage: 1,
+        totalPages: 0,
+        totalBlogs: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    };
+
+    const emptyCategoryStats = {
+      categories: [],
+    };
+
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            No Analytics Data
-          </h2>
-          <p className="text-gray-600">
-            Start writing blogs to see your analytics!
-          </p>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Analytics Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Track your blog performance and engagement metrics
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setActiveTab("overview")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  activeTab === "overview"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Overview
+              </button>
+              <button
+                onClick={() => setActiveTab("blogs")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  activeTab === "blogs"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Blog Performance
+              </button>
+              <button
+                onClick={() => setActiveTab("categories")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  activeTab === "categories"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Categories
+              </button>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="space-y-6">
+            {activeTab === "overview" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <AnalyticsOverviewCards overview={emptyOverview.overview} />
+                <TopPerformingBlogs blogs={emptyOverview.topPerformingBlogs} />
+              </motion.div>
+            )}
+
+            {activeTab === "blogs" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <BlogsPerformanceTable
+                  data={emptyBlogsAnalytics}
+                  sortBy={blogsSortBy}
+                  sortOrder={blogsSortOrder}
+                  onSortChange={handleBlogsSortChange}
+                />
+              </motion.div>
+            )}
+
+            {activeTab === "categories" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <CategoryPerformance data={emptyCategoryStats} />
+              </motion.div>
+            )}
+          </div>
         </div>
       </div>
     );
