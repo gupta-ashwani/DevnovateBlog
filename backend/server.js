@@ -58,12 +58,11 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // Session configuration for view tracking
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "devnovate-blog-session-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl:
-        process.env.MONGODB_URI || "mongodb://localhost:27017/devnovate-blog",
+      mongoUrl: process.env.MONGODB_URL,
       touchAfter: 24 * 3600, // lazy session update (24 hours)
     }),
     cookie: {
@@ -82,7 +81,7 @@ if (process.env.NODE_ENV === "development") {
 // Database connection
 mongoose
   .connect(
-    process.env.MONGODB_URI || "mongodb://localhost:27017/devnovate-blog",
+    process.env.MONGODB_URL || "mongodb://localhost:27017/devnovate-blog",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
