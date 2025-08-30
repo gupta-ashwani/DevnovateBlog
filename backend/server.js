@@ -34,14 +34,6 @@ app.use(
 // other middlewares
 app.use(express.json());
 
-// your routes
-// app.use("/api", require("./routes/api"));
-
-// start server
-app.listen(process.env.PORT || 5000, () => {
-  console.log("Server running...");
-});
-
 // Security
 app.use(
   helmet({
