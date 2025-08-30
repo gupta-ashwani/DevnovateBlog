@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { blogService } from "@/services/blog";
 import { BlogCategory, BlogStatus } from "@/types";
 import ImageUpload from "@/components/ImageUpload";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 const categories = [
   "Technology",
@@ -260,14 +261,21 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden"
             >
-              <textarea
-                placeholder="Tell your blog..."
-                value={blogData.content}
-                onChange={(e) => handleInputChange("content", e.target.value)}
-                className="w-full h-96 text-gray-900 placeholder-gray-400 border-none outline-none resize-none leading-relaxed"
-              />
+              <div className="p-6 pb-0">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Content
+                </h3>
+              </div>
+              <div className="px-6 pb-6">
+                <MarkdownEditor
+                  value={blogData.content}
+                  onChange={(value) => handleInputChange("content", value)}
+                  placeholder="Write your blog content using Markdown..."
+                  height={500}
+                />
+              </div>
             </motion.div>
 
             {/* Excerpt */}
@@ -422,13 +430,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
                 <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-medium text-blue-900 mb-2">
-                    Submission Guidelines
+                    Markdown Writing Tips
                   </h4>
                   <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Ensure your content is original</li>
-                    <li>• Add relevant tags for discoverability</li>
-                    <li>• Write a compelling excerpt</li>
-                    <li>• Submit for review when ready</li>
+                    <li>• Use headers (# ## ###) to structure your content</li>
+                    <li>• Add code blocks with ``` for syntax highlighting</li>
+                    <li>• Include images with ![alt text](url)</li>
+                    <li>• Use **bold** and *italic* for emphasis</li>
+                    <li>• Create tables for better data presentation</li>
+                    <li>• Preview your content before submitting</li>
                   </ul>
                 </div>
               </div>

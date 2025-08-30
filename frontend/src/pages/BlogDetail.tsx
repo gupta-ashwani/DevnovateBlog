@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkGfm from "remark-gfm";
 import {
   Heart,
   MessageCircle,
@@ -127,6 +131,76 @@ const BlogDetail: React.FC = () => {
   );
   const [commentMenuOpen, setCommentMenuOpen] = useState<string | null>(null);
   const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Markdown components for rendering blog content
+  const markdownComponents = {
+    code({ node, inline, className, children, ...props }: any) {
+      const match = /language-(\w+)/.exec(className || "");
+      return !inline && match ? (
+        <SyntaxHighlighter
+          style={tomorrow}
+          language={match[1]}
+          PreTag="div"
+          className="rounded-lg my-4"
+          {...props}
+        >
+          {String(children).replace(/\n$/, "")}
+        </SyntaxHighlighter>
+      ) : (
+        <code
+          className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono"
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    },
+    blockquote: ({ children }: any) => (
+      <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-6 italic text-gray-600 bg-blue-50 rounded-r-lg">
+        {children}
+      </blockquote>
+    ),
+    h1: ({ children }: any) => (
+      <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4">{children}</h1>
+    ),
+    h2: ({ children }: any) => (
+      <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">{children}</h2>
+    ),
+    h3: ({ children }: any) => (
+      <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">{children}</h3>
+    ),
+    p: ({ children }: any) => (
+      <p className="text-gray-800 leading-relaxed mb-6">{children}</p>
+    ),
+    ul: ({ children }: any) => (
+      <ul className="list-disc list-inside mb-6 space-y-2 text-gray-800">
+        {children}
+      </ul>
+    ),
+    ol: ({ children }: any) => (
+      <ol className="list-decimal list-inside mb-6 space-y-2 text-gray-800">
+        {children}
+      </ol>
+    ),
+    li: ({ children }: any) => <li className="leading-relaxed">{children}</li>,
+    a: ({ children, href }: any) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:text-blue-800 underline"
+      >
+        {children}
+      </a>
+    ),
+    img: ({ src, alt }: any) => (
+      <img
+        src={src}
+        alt={alt}
+        className="max-w-full h-auto rounded-lg shadow-sm my-6 mx-auto"
+      />
+    ),
+  };
 
   useEffect(() => {
     if (slug) {
@@ -925,17 +999,14 @@ const BlogDetail: React.FC = () => {
 
         {/* Blog Content */}
         <div className="mb-12 w-full overflow-hidden">
-          <div
-            className="text-gray-800 leading-relaxed prose prose-lg max-w-none break-words"
-            style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
-            dangerouslySetInnerHTML={{
-              __html: blog.content
-                .replace(/\n\n/g, '</p><p class="mb-6">')
-                .replace(/\n/g, "<br>")
-                .replace(/^/, '<p class="mb-6">')
-                .replace(/$/, "</p>"),
-            }}
-          />
+          <div className="prose prose-lg max-w-none">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={markdownComponents}
+            >
+              {blog.content}
+            </ReactMarkdown>
+          </div>
         </div>
 
         {/* SEO Keywords */}
