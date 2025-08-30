@@ -34,9 +34,27 @@ passport.use(
         }
 
         // Create new user
+        // Generate a safe username (max 20 characters)
+        const baseUsername = profile.emails[0].value.split("@")[0];
+        const randomSuffix = Math.random().toString(36).substring(2, 8); // 6 random characters
+        let username =
+          baseUsername.length > 13
+            ? baseUsername.substring(0, 13) + randomSuffix
+            : baseUsername + randomSuffix;
+
+        // Ensure username is unique
+        let existingUser = await User.findOne({ username });
+        let counter = 1;
+        while (existingUser) {
+          const suffix = counter.toString();
+          username = username.substring(0, 20 - suffix.length) + suffix;
+          existingUser = await User.findOne({ username });
+          counter++;
+        }
+
         const newUser = new User({
           googleId: profile.id,
-          username: profile.emails[0].value.split("@")[0] + "_" + Date.now(),
+          username: username,
           email: profile.emails[0].value,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
