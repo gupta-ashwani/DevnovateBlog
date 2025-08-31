@@ -259,11 +259,11 @@ const AdminDashboard: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 gap-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center overflow-hidden">
+                <div className="relative flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center overflow-hidden">
                     {user?.avatar ? (
                       <img
                         src={user.avatar}
@@ -271,26 +271,29 @@ const AdminDashboard: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-white text-lg font-semibold">
+                      <span className="text-white text-lg sm:text-xl font-semibold">
                         {user?.fullName?.charAt(0).toUpperCase()}
                       </span>
                     )}
                   </div>
                   <Link
                     to="/admin/profile"
-                    className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-1.5 shadow-md border border-gray-200 hover:bg-gray-50 transition-colors touch-manipulation"
                     title="Edit avatar"
                   >
-                    <Edit3 className="h-3 w-3 text-gray-600" />
+                    <Edit3 className="h-3.5 w-3.5 text-gray-600" />
                   </Link>
                 </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">
                     Admin Dashboard
                   </h1>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Welcome back, {user?.fullName} • Manage blogs, users, and
-                    platform analytics
+                  <p className="mt-1 text-sm sm:text-base text-gray-600 truncate">
+                    Welcome back, {user?.fullName}
+                    <span className="hidden md:inline">
+                      {" "}
+                      • Manage blogs, users, and platform analytics
+                    </span>
                   </p>
                 </div>
               </div>
@@ -298,32 +301,33 @@ const AdminDashboard: React.FC = () => {
             <div className="flex space-x-3">
               <Link
                 to="/admin/profile"
-                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                className="bg-gray-100 text-gray-700 px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2 text-sm"
               >
                 <User className="h-4 w-4" />
-                <span>Edit Profile</span>
+                <span className="hidden sm:inline">Edit Profile</span>
+                <span className="sm:hidden">Profile</span>
               </Link>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Stats Overview */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 justify-items-center max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-sm"
+              className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200 w-full"
             >
               <div className="flex items-center">
-                <Users className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">
                     Total Users
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">
                     {stats.overview.totalUsers}
                   </p>
                 </div>
@@ -334,15 +338,15 @@ const AdminDashboard: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-sm"
+              className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200 w-full"
             >
               <div className="flex items-center">
-                <FileText className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">
                     Published Blogs
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">
                     {stats.overview.publishedBlogs}
                   </p>
                 </div>
@@ -353,15 +357,15 @@ const AdminDashboard: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-sm"
+              className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200 w-full sm:col-span-2 lg:col-span-1"
             >
               <div className="flex items-center">
-                <Clock className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">
                     Pending Review
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">
                     {stats.overview.pendingBlogs}
                   </p>
                 </div>
@@ -373,10 +377,13 @@ const AdminDashboard: React.FC = () => {
         {/* Tabs */}
         <div className="bg-white rounded-lg border border-gray-200 mb-6">
           <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6" aria-label="Tabs">
+            <nav
+              className="flex overflow-x-auto px-4 sm:px-6"
+              aria-label="Tabs"
+            >
               <button
                 onClick={() => setActiveTab("overview")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap mr-6 sm:mr-8 ${
                   activeTab === "overview"
                     ? "border-blue-500 text-blue-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -386,33 +393,44 @@ const AdminDashboard: React.FC = () => {
               </button>
               <button
                 onClick={() => setActiveTab("pending")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap mr-6 sm:mr-8 ${
                   activeTab === "pending"
                     ? "border-blue-500 text-blue-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                Pending Blogs ({pendingBlogs.length})
+                <span className="hidden sm:inline">
+                  Pending Blogs ({pendingBlogs.length})
+                </span>
+                <span className="sm:hidden">
+                  Pending ({pendingBlogs.length})
+                </span>
               </button>
               <button
                 onClick={() => setActiveTab("published")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap mr-6 sm:mr-8 ${
                   activeTab === "published"
                     ? "border-blue-500 text-blue-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                Published Blogs ({publishedBlogs.length})
+                <span className="hidden sm:inline">
+                  Published Blogs ({publishedBlogs.length})
+                </span>
+                <span className="sm:hidden">
+                  Published ({publishedBlogs.length})
+                </span>
               </button>
               <button
                 onClick={() => setActiveTab("users")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "users"
                     ? "border-blue-500 text-blue-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                Recent Users
+                <span className="hidden sm:inline">Recent Users</span>
+                <span className="sm:hidden">Users</span>
               </button>
             </nav>
           </div>

@@ -247,55 +247,62 @@ const AnalyticsDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Analytics Dashboard
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
                 Track your blog performance and engagement metrics
               </p>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={refreshData}
                 disabled={isRefreshing}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 touch-manipulation"
               >
                 <RefreshCw
                   className={`w-4 h-4 mr-2 ${
                     isRefreshing ? "animate-spin" : ""
                   }`}
                 />
-                {isRefreshing ? "Refreshing..." : "Refresh"}
+                <span className="hidden sm:inline">
+                  {isRefreshing ? "Refreshing..." : "Refresh"}
+                </span>
+                <span className="sm:hidden">
+                  {isRefreshing ? "..." : "Refresh"}
+                </span>
               </button>
               <button
                 onClick={exportData}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center justify-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 touch-manipulation"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Export Data
+                <span className="hidden sm:inline">Export Data</span>
+                <span className="sm:hidden">Export</span>
               </button>
             </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="mt-6 border-b border-gray-200">
-            <nav className="flex space-x-8">
+          <div className="mt-4 sm:mt-6 border-b border-gray-200">
+            <nav className="flex space-x-4 sm:space-x-8 overflow-x-auto">
               {tabs.map((tab) => {
                 const IconComponent = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
+                    className={`flex items-center py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap touch-manipulation ${
                       activeTab === tab.id
                         ? "border-blue-500 text-blue-600"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     }`}
                   >
-                    <IconComponent className="w-5 h-5 mr-2" />
-                    {tab.label}
+                    <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.label.split(" ")[0]}</span>
                   </button>
                 );
               })}

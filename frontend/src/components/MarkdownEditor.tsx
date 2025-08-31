@@ -38,7 +38,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   placeholder = "Write your blog content in Markdown...",
   height = 400,
 }) => {
-  const [viewMode, setViewMode] = useState<ViewMode>("split");
+  const [viewMode, setViewMode] = useState<ViewMode>("edit");
   const [showHelp, setShowHelp] = useState(false);
 
   // Toolbar button for quick insertions
@@ -227,9 +227,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
-        <div className="flex items-center space-x-1">
-          {toolbarButtons.map((button, index) => (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-gray-50 border-b border-gray-200 gap-3 sm:gap-0">
+        <div className="flex flex-wrap items-center gap-1">
+          {toolbarButtons.slice(0, 6).map((button, index) => (
             <motion.button
               key={index}
               whileHover={{ scale: 1.05 }}
@@ -238,9 +238,25 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors"
               title={button.title}
             >
-              <button.icon className="h-4 w-4" />
+              <button.icon className="h-3 w-3 sm:h-4 sm:w-4" />
             </motion.button>
           ))}
+
+          {/* Additional buttons - hidden on small screens */}
+          <div className="hidden sm:flex items-center gap-1">
+            {toolbarButtons.slice(6).map((button, index) => (
+              <motion.button
+                key={index + 6}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={button.action}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors"
+                title={button.title}
+              >
+                <button.icon className="h-4 w-4" />
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -251,42 +267,42 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors"
             title="Markdown Help"
           >
-            <HelpCircle className="h-4 w-4" />
+            <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
           </motion.button>
 
           <div className="flex border border-gray-300 rounded-lg overflow-hidden">
             <button
               onClick={() => setViewMode("edit")}
-              className={`px-3 py-1 text-sm flex items-center space-x-1 transition-colors ${
+              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm flex items-center space-x-1 transition-colors ${
                 viewMode === "edit"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               <Edit3 className="h-3 w-3" />
-              <span>Edit</span>
+              <span className="hidden sm:inline">Edit</span>
             </button>
             <button
               onClick={() => setViewMode("split")}
-              className={`px-3 py-1 text-sm flex items-center space-x-1 transition-colors border-x border-gray-300 ${
+              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm flex items-center space-x-1 transition-colors border-x border-gray-300 ${
                 viewMode === "split"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+              } hidden sm:flex`}
             >
               <Split className="h-3 w-3" />
               <span>Split</span>
             </button>
             <button
               onClick={() => setViewMode("preview")}
-              className={`px-3 py-1 text-sm flex items-center space-x-1 transition-colors ${
+              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm flex items-center space-x-1 transition-colors ${
                 viewMode === "preview"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               <Eye className="h-3 w-3" />
-              <span>Preview</span>
+              <span className="hidden sm:inline">Preview</span>
             </button>
           </div>
         </div>
@@ -298,9 +314,60 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="p-4 bg-blue-50 border-b border-gray-200"
+          className="p-3 sm:p-4 bg-blue-50 border-b border-gray-200"
         >
-          {helpContent}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs sm:text-sm">
+            <div>
+              <h4 className="font-semibold mb-2">Basic</h4>
+              <div className="space-y-1 text-gray-600">
+                <div>
+                  <code>**bold**</code>
+                </div>
+                <div>
+                  <code>*italic*</code>
+                </div>
+                <div>
+                  <code>`code`</code>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Headers</h4>
+              <div className="space-y-1 text-gray-600">
+                <div>
+                  <code># H1</code>
+                </div>
+                <div>
+                  <code>## H2</code>
+                </div>
+                <div>
+                  <code>### H3</code>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Lists</h4>
+              <div className="space-y-1 text-gray-600">
+                <div>
+                  <code>- Item</code>
+                </div>
+                <div>
+                  <code>1. Item</code>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Links</h4>
+              <div className="space-y-1 text-gray-600">
+                <div>
+                  <code>[link](url)</code>
+                </div>
+                <div>
+                  <code>![img](url)</code>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       )}
 
@@ -311,14 +378,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full p-4 border-none outline-none resize-none font-mono text-sm leading-relaxed"
+            className="w-full p-3 sm:p-4 border-none outline-none resize-none font-mono text-sm leading-relaxed"
             style={{ height: `${height}px` }}
           />
         )}
 
         {viewMode === "preview" && (
           <div
-            className="prose prose-sm max-w-none p-4 overflow-y-auto"
+            className="prose prose-sm max-w-none p-3 sm:p-4 overflow-y-auto"
             style={{ height: `${height}px` }}
           >
             <ReactMarkdown
@@ -337,13 +404,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full p-4 border-none outline-none resize-none font-mono text-sm leading-relaxed"
+                className="w-full p-3 sm:p-4 border-none outline-none resize-none font-mono text-sm leading-relaxed"
                 style={{ height: `${height}px` }}
               />
             </div>
             <div className="w-1/2">
               <div
-                className="prose prose-sm max-w-none p-4 overflow-y-auto"
+                className="prose prose-sm max-w-none p-3 sm:p-4 overflow-y-auto"
                 style={{ height: `${height}px` }}
               >
                 <ReactMarkdown

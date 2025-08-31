@@ -68,14 +68,14 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link
           to="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors mb-8"
+          className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors mb-6 sm:mb-8 touch-manipulation"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to home
+          <span className="text-sm sm:text-base">Back to home</span>
         </Link>
 
         <motion.div
@@ -84,17 +84,21 @@ const Register: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold text-gray-900">Join Devnovate</h2>
-          <p className="mt-2 text-gray-600">Start your writing journey today</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Join Devnovate
+          </h2>
+          <p className="mt-2 text-gray-600 text-sm sm:text-base">
+            Start your writing journey today
+          </p>
         </motion.div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-6 sm:mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-white py-8 px-4 shadow-sm sm:rounded-2xl sm:px-10 border border-gray-100"
+          className="bg-white py-6 sm:py-8 px-4 shadow-sm sm:rounded-2xl sm:px-10 border border-gray-100"
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
@@ -121,7 +125,7 @@ const Register: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="firstName"
@@ -136,7 +140,7 @@ const Register: React.FC = () => {
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="block w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white transition-colors sm:text-sm"
+                  className="block w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white transition-colors text-sm sm:text-sm"
                   placeholder="First name"
                 />
               </div>
@@ -154,7 +158,7 @@ const Register: React.FC = () => {
                   required
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="block w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white transition-colors sm:text-sm"
+                  className="block w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white transition-colors text-sm sm:text-sm"
                   placeholder="Last name"
                 />
               </div>

@@ -87,18 +87,33 @@ const TopPerformingBlogs: React.FC<TopPerformingBlogsProps> = ({ blogs }) => {
                 </span>
               </div>
 
-              <div className="flex items-center space-x-4 text-xs text-gray-500">
+              <div className="flex items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                 <span className="flex items-center">
-                  <Eye className="w-3 h-3 mr-1" />
-                  {blog.views}
+                  <Eye className="w-4 h-4 sm:w-3 sm:h-3 mr-1" />
+                  <span className="hidden xs:inline">{blog.views}</span>
+                  <span className="xs:hidden">
+                    {blog.views > 999
+                      ? `${Math.floor(blog.views / 1000)}k`
+                      : blog.views}
+                  </span>
                 </span>
                 <span className="flex items-center">
-                  <Heart className="w-3 h-3 mr-1" />
-                  {blog.likes}
+                  <Heart className="w-4 h-4 sm:w-3 sm:h-3 mr-1" />
+                  <span className="hidden xs:inline">{blog.likes}</span>
+                  <span className="xs:hidden">
+                    {blog.likes > 999
+                      ? `${Math.floor(blog.likes / 1000)}k`
+                      : blog.likes}
+                  </span>
                 </span>
                 <span className="flex items-center">
-                  <MessageCircle className="w-3 h-3 mr-1" />
-                  {blog.comments}
+                  <MessageCircle className="w-4 h-4 sm:w-3 sm:h-3 mr-1" />
+                  <span className="hidden xs:inline">{blog.comments}</span>
+                  <span className="xs:hidden">
+                    {blog.comments > 999
+                      ? `${Math.floor(blog.comments / 1000)}k`
+                      : blog.comments}
+                  </span>
                 </span>
                 {blog.publishedAt && (
                   <span>{formatDate(blog.publishedAt)}</span>

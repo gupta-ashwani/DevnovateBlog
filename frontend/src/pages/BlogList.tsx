@@ -71,20 +71,20 @@ const BlogList: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             {searchQuery
               ? `Search Results for "${searchQuery}"`
               : "Latest Blogs"}
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             {searchQuery
               ? `Found ${blogs.length} blog${
                   blogs.length !== 1 ? "s" : ""
@@ -100,21 +100,21 @@ const BlogList: React.FC = () => {
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
               No blogs yet
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 px-4">
               Be the first to share your knowledge with the community!
             </p>
             <Link
               to="/write"
-              className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+              className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base"
             >
               Write Your Blog
             </Link>
           </motion.div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {blogs.map((blog, index) => (
               <motion.article
                 key={blog._id}
@@ -123,26 +123,26 @@ const BlogList: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
                 className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
               >
-                <div className="p-8">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div className="p-4 sm:p-8">
+                  <div className="flex items-center space-x-3 sm:space-x-4 mb-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
                       {blog.author?.firstName?.charAt(0).toUpperCase() ||
                         blog.author?.username?.charAt(0).toUpperCase() ||
                         "A"}
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">
                         {blog.author?.fullName ||
                           blog.author?.username ||
                           "Anonymous"}
                       </h4>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                         <span className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span>{formatDate(blog.createdAt)}</span>
                         </span>
                         <span className="flex items-center space-x-1">
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span>{blog.metrics?.views || 0} views</span>
                         </span>
                       </div>
@@ -150,26 +150,26 @@ const BlogList: React.FC = () => {
                   </div>
 
                   <Link to={`/blog/${blog.slug}`} className="block group">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                       {blog.title}
                     </h2>
-                    <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                    <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3 text-sm sm:text-base">
                       {blog.excerpt || blog.content.substring(0, 200) + "..."}
                     </p>
                   </Link>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center flex-wrap gap-2">
                       {blog.tags?.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                          className="bg-gray-100 text-gray-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm"
                         >
                           {tag}
                         </span>
                       ))}
                       {blog.tags && blog.tags.length > 3 && (
-                        <span className="text-gray-500 text-sm">
+                        <span className="text-gray-500 text-xs sm:text-sm">
                           +{blog.tags.length - 3} more
                         </span>
                       )}
@@ -177,7 +177,7 @@ const BlogList: React.FC = () => {
 
                     <Link
                       to={`/blog/${blog.slug}`}
-                      className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center space-x-1 group"
+                      className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center space-x-1 group self-start sm:self-center"
                     >
                       <span>Read more</span>
                       <svg

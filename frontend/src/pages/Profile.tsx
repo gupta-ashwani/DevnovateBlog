@@ -145,11 +145,11 @@ const Profile: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left sm:space-x-6 space-y-4 sm:space-y-0">
             {/* Avatar */}
-            <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+            <div className="relative flex-shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold overflow-hidden">
                 {user.avatar ? (
                   <img
                     src={user.avatar}
@@ -164,27 +164,29 @@ const Profile: React.FC = () => {
             </div>
 
             {/* User Info */}
-            <div className="flex-1">
-              <div className="flex items-center space-x-4 mb-2">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {user.fullName || user.username}
-                </h1>
-              </div>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 break-words">
+                {user.fullName || user.username}
+              </h1>
 
-              <p className="text-gray-600 mb-3">@{user.username}</p>
+              <p className="text-gray-600 mb-3 text-sm sm:text-base">
+                @{user.username}
+              </p>
 
               {user.bio && (
-                <p className="text-gray-700 mb-4 max-w-2xl">{user.bio}</p>
+                <p className="text-gray-700 mb-4 max-w-2xl text-sm sm:text-base leading-relaxed break-words">
+                  {user.bio}
+                </p>
               )}
 
               {/* Social Links */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center sm:justify-start space-x-4 mb-4 sm:mb-0">
                 {user.socialLinks?.website && (
                   <a
                     href={user.socialLinks.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
                     <Globe className="h-5 w-5" />
                   </a>
@@ -194,7 +196,7 @@ const Profile: React.FC = () => {
                     href={user.socialLinks.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-blue-500"
+                    className="text-gray-600 hover:text-blue-500 p-2 hover:bg-blue-50 rounded-full transition-colors"
                   >
                     <Twitter className="h-5 w-5" />
                   </a>
@@ -204,7 +206,7 @@ const Profile: React.FC = () => {
                     href={user.socialLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-blue-700"
+                    className="text-gray-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-full transition-colors"
                   >
                     <Linkedin className="h-5 w-5" />
                   </a>
@@ -214,7 +216,7 @@ const Profile: React.FC = () => {
                     href={user.socialLinks.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
                     <Github className="h-5 w-5" />
                   </a>
@@ -223,13 +225,22 @@ const Profile: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
               <Link
                 to={`/analytics/${user._id}`}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
-                View Analytics
+                <span className="hidden sm:inline">My Analytics</span>
+                <span className="sm:hidden">Analytics</span>
+              </Link>
+              <Link
+                to="/write"
+                className="inline-flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Write Blog</span>
+                <span className="sm:hidden">Write</span>
               </Link>
             </div>
           </div>

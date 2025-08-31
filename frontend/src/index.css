@@ -43,6 +43,34 @@
   * {
     @apply transition-colors duration-200;
   }
+
+  /* Mobile-first responsive font sizes */
+  h1 {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
+  }
+
+  h2 {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  h3 {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  /* Mobile-friendly tap targets */
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  @media (max-width: 640px) {
+    button,
+    a {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
 }
 
 /* Custom component styles */
@@ -133,6 +161,83 @@
 
   .backface-hidden {
     backface-visibility: hidden;
+  }
+
+  /* Mobile responsive utilities */
+  .mobile-container {
+    @apply max-w-full mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8;
+  }
+
+  .mobile-text {
+    @apply text-sm sm:text-base;
+  }
+
+  .mobile-heading {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .mobile-padding {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+
+  .mobile-margin {
+    @apply m-3 sm:m-4 lg:m-6;
+  }
+
+  /* Responsive breakpoint utilities */
+  .container-responsive {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-responsive {
+      padding: 0 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-responsive {
+      padding: 0 2rem;
+    }
+  }
+
+  /* Touch-friendly buttons */
+  .touch-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .touch-button {
+      min-height: 48px;
+      min-width: 48px;
+      padding: 0.875rem 1.125rem;
+    }
+  }
+
+  /* Better mobile forms */
+  .mobile-input {
+    @apply w-full px-3 py-3 text-base border border-gray-300 rounded-lg;
+  }
+
+  @media (min-width: 640px) {
+    .mobile-input {
+      @apply px-4 py-2 text-sm;
+    }
+  }
+
+  /* Responsive card spacing */
+  .card-responsive {
+    @apply rounded-lg border border-gray-200 overflow-hidden;
+    @apply p-4 sm:p-6;
+    @apply mb-4 sm:mb-6;
   }
 }
 

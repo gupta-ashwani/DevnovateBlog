@@ -233,9 +233,9 @@ const Navbar: React.FC = () => {
             {/* Mobile search button */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors touch-manipulation"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-6 w-6" />
             </button>
 
             {isAuthenticated ? (
@@ -518,6 +518,69 @@ const Navbar: React.FC = () => {
                     </Link>
                   </div>
                 )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mobile Search Overlay */}
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50"
+            >
+              <div className="p-4">
+                <div className="relative" ref={searchRef}>
+                  <input
+                    type="text"
+                    placeholder="Search blogs..."
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                    autoFocus
+                  />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+
+                  {/* Mobile Search Results */}
+                  {searchQuery && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                      {isSearching ? (
+                        <div className="p-4 text-center text-gray-500">
+                          Searching...
+                        </div>
+                      ) : searchResults.length > 0 ? (
+                        <div className="py-2">
+                          {searchResults.map((blog) => (
+                            <Link
+                              key={blog._id}
+                              to={`/blog/${blog._id}`}
+                              onClick={() => {
+                                setIsSearchOpen(false);
+                                setSearchQuery("");
+                              }}
+                              className="block px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                            >
+                              <h4 className="font-medium text-gray-900 line-clamp-1 text-sm">
+                                {blog.title}
+                              </h4>
+                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                {blog.excerpt}
+                              </p>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-4 text-center text-gray-500 text-sm">
+                          No blogs found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}

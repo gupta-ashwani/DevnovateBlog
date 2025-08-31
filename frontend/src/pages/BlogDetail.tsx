@@ -130,6 +130,7 @@ const BlogDetail: React.FC = () => {
     new Set()
   );
   const [commentMenuOpen, setCommentMenuOpen] = useState<string | null>(null);
+  const [showMobileActions, setShowMobileActions] = useState(false);
   const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Markdown components for rendering blog content
@@ -792,35 +793,50 @@ const BlogDetail: React.FC = () => {
 
       {/* Navigation Header */}
       <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-40">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => navigate(-1)}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
-              <span className="font-medium">Back</span>
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="font-medium text-sm sm:text-base">Back</span>
             </button>
 
-            {/* Floating Action Buttons */}
-            <div className="flex items-center space-x-2">
-              {/* Removed interaction buttons from here */}
-            </div>
+            {/* Author Actions for Mobile */}
+            {isAuthor && (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to={`/edit/${blog._id}`}
+                  className="text-blue-600 hover:text-blue-800 transition-colors p-2"
+                  title="Edit blog"
+                >
+                  <Edit3 className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Link>
+                <button
+                  onClick={handleDeleteBlog}
+                  className="text-red-600 hover:text-red-800 transition-colors p-2"
+                  title="Delete blog"
+                >
+                  <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <article className="max-w-4xl mx-auto px-4 py-8 w-full overflow-hidden">
+      <article className="max-w-4xl mx-auto px-4 py-6 sm:py-8 w-full overflow-hidden">
         {/* Blog Header */}
-        <div className="mb-8 w-full">
+        <div className="mb-6 sm:mb-8 w-full">
           {/* Tags */}
           {blog.tags && blog.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
               {blog.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full"
+                  className="inline-flex items-center px-2 sm:px-3 py-1 bg-blue-50 text-blue-700 text-xs sm:text-sm font-medium rounded-full"
                 >
                   <Tag className="h-3 w-3 mr-1" />
                   {tag}
@@ -830,91 +846,98 @@ const BlogDetail: React.FC = () => {
           )}
 
           {/* Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 break-words">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 break-words">
             {blog.title}
           </h1>
 
           {/* Excerpt */}
           {blog.excerpt && (
-            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 break-words">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed mb-6 sm:mb-8 break-words">
               {blog.excerpt}
             </p>
           )}
 
           {/* Author & Meta Info */}
-          <div className="flex items-center justify-between py-6 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:py-6 border-b border-gray-100 gap-4">
             <div className="flex items-center space-x-3">
               <Link
                 to={`/profile/${blog.author.username}`}
                 className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
               >
-                <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm sm:text-base">
                   {blog.author.firstName?.charAt(0) ||
                     blog.author.username?.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900 text-base">
+                  <p className="font-medium text-gray-900 text-sm sm:text-base">
                     {blog.author.fullName || blog.author.username}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-500 sm:hidden">
+                    @{blog.author.username}
                   </p>
                 </div>
               </Link>
 
               {!isAuthor && (
-                <button className="px-4 py-1.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-50 transition-colors">
+                <button className="px-3 sm:px-4 py-1.5 border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium rounded-full hover:bg-gray-50 transition-colors">
                   Follow
                 </button>
               )}
             </div>
 
-            <div className="flex items-center space-x-3 text-sm text-gray-500">
+            <div className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-500">
               <span>{blog.readingTime || 5} min read</span>
               <span>•</span>
-              <span>{formatDate(blog.publishedAt || blog.createdAt)}</span>
+              <span className="truncate">
+                {formatDate(blog.publishedAt || blog.createdAt)}
+              </span>
             </div>
           </div>
 
           {/* Interaction Bar */}
-          <div className="flex items-center justify-between py-4 border-b border-gray-100">
-            <div className="flex items-center space-x-6">
+          <div className="flex items-center justify-between py-3 sm:py-4 border-b border-gray-100">
+            <div className="flex items-center space-x-4 sm:space-x-6">
               <button
                 onClick={handleLike}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center space-x-1 sm:space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <div className="flex items-center space-x-1">
-                  <Heart
-                    className={`h-6 w-6 ${
-                      isLiked ? "fill-red-500 text-red-500" : ""
-                    }`}
-                  />
-                  <span className="text-sm font-medium">{likesCount}</span>
-                </div>
+                <Heart
+                  className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                    isLiked ? "fill-red-500 text-red-500" : ""
+                  }`}
+                />
+                <span className="text-xs sm:text-sm font-medium">
+                  {likesCount}
+                </span>
               </button>
 
               <button
                 onClick={scrollToComments}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center space-x-1 sm:space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <MessageCircle className="h-6 w-6" />
-                <span className="text-sm font-medium">
+                <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-xs sm:text-sm font-medium">
                   {getTotalCommentsCount()}
                 </span>
               </button>
 
-              <div className="flex items-center space-x-2 text-gray-600">
-                <Eye className="h-6 w-6" />
-                <span className="text-sm font-medium">
+              <div className="flex items-center space-x-1 sm:space-x-2 text-gray-600">
+                <Eye className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-xs sm:text-sm font-medium">
                   {blog.metrics?.views || 0}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <button
                 onClick={handleBookmark}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-gray-600 hover:text-gray-900 transition-colors p-1"
               >
                 <Bookmark
-                  className={`h-6 w-6 ${isBookmarked ? "fill-current" : ""}`}
+                  className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                    isBookmarked ? "fill-current" : ""
+                  }`}
                 />
               </button>
 
@@ -924,9 +947,9 @@ const BlogDetail: React.FC = () => {
                     e.stopPropagation();
                     setShowShareMenu(!showShareMenu);
                   }}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors p-1"
                 >
-                  <Share2 className="h-6 w-6" />
+                  <Share2 className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
 
                 {showShareMenu && (
@@ -988,18 +1011,18 @@ const BlogDetail: React.FC = () => {
 
         {/* Featured Image */}
         {blog.featuredImage && (
-          <div className="mb-12">
+          <div className="mb-8 sm:mb-12">
             <img
               src={blog.featuredImage}
               alt={blog.title}
-              className="w-full h-96 object-cover rounded-2xl shadow-lg"
+              className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover rounded-lg sm:rounded-2xl shadow-lg"
             />
           </div>
         )}
 
         {/* Blog Content */}
-        <div className="mb-12 w-full overflow-hidden">
-          <div className="prose prose-lg max-w-none">
+        <div className="mb-8 sm:mb-12 w-full overflow-hidden">
+          <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-code:text-blue-600 prose-code:bg-blue-50 prose-code:px-1 prose-code:rounded">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={markdownComponents}
@@ -1011,15 +1034,15 @@ const BlogDetail: React.FC = () => {
 
         {/* SEO Keywords */}
         {blog.seo?.keywords && blog.seo.keywords.length > 0 && (
-          <div className="mb-12 p-6 bg-gray-50 rounded-xl">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="mb-8 sm:mb-12 p-4 sm:p-6 bg-gray-50 rounded-lg sm:rounded-xl">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
               Related Topics
             </h3>
             <div className="flex flex-wrap gap-2">
               {blog.seo.keywords.map((keyword) => (
                 <span
                   key={keyword}
-                  className="px-3 py-1 bg-white text-gray-600 text-sm rounded-full border border-gray-200"
+                  className="px-2 sm:px-3 py-1 bg-white text-gray-600 text-xs sm:text-sm rounded-full border border-gray-200"
                 >
                   {keyword}
                 </span>
@@ -1030,14 +1053,14 @@ const BlogDetail: React.FC = () => {
       </article>
 
       {/* Comments Section */}
-      <section id="comments-section" className="bg-gray-50 py-16">
+      <section id="comments-section" className="bg-gray-50 py-8 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 w-full overflow-hidden">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+          <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
             <div className="p-4 sm:p-8 border-b border-gray-100">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 Discussion ({getTotalCommentsCount()})
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Join the conversation and share your thoughts on this article.
               </p>
             </div>
@@ -1045,9 +1068,9 @@ const BlogDetail: React.FC = () => {
             <div className="p-4 sm:p-8 w-full overflow-hidden">
               {/* Comment Form */}
               {user ? (
-                <form onSubmit={handleSubmitComment} className="mb-12">
-                  <div className="flex space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
+                <form onSubmit={handleSubmitComment} className="mb-8 sm:mb-12">
+                  <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 mx-auto sm:mx-0">
                       {user.firstName?.charAt(0) || user.username?.charAt(0)}
                     </div>
                     <div className="flex-1">
@@ -1056,17 +1079,17 @@ const BlogDetail: React.FC = () => {
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder="What are your thoughts on this article?"
-                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-500"
-                        rows={4}
+                        className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                        rows={3}
                       />
-                      <div className="flex justify-between items-center mt-4">
-                        <p className="text-sm text-gray-500">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-3 sm:mt-4 gap-3">
+                        <p className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
                           Be respectful and constructive in your comments.
                         </p>
                         <button
                           type="submit"
                           disabled={!newComment.trim()}
-                          className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                          className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
                         >
                           <Send className="h-4 w-4" />
                           <span>Post Comment</span>
@@ -1076,18 +1099,18 @@ const BlogDetail: React.FC = () => {
                   </div>
                 </form>
               ) : (
-                <div className="mb-12 p-8 bg-gray-50 border border-gray-200 rounded-xl text-center">
-                  <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="mb-8 sm:mb-12 p-4 sm:p-8 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl text-center">
+                  <MessageCircle className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                     Join the discussion
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
                     Sign in to share your thoughts and engage with other
                     readers.
                   </p>
                   <Link
                     to="/login"
-                    className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
+                    className="inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
                   >
                     <User className="h-4 w-4" />
                     <span>Sign In to Comment</span>
@@ -1097,28 +1120,28 @@ const BlogDetail: React.FC = () => {
 
               {/* Comments List */}
               {commentsLoading ? (
-                <div className="flex justify-center py-12">
+                <div className="flex justify-center py-8 sm:py-12">
                   <LoadingSpinner size="lg" />
                 </div>
               ) : comments.length > 0 ? (
-                <div className="space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   {comments.map((comment) => (
                     <CommentThread key={comment._id} comment={comment} />
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16">
-                  <MessageCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="text-center py-12 sm:py-16">
+                  <MessageCircle className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                     No comments yet
                   </h3>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
                     Be the first to share your thoughts on this article.
                   </p>
                   {!user && (
                     <Link
                       to="/login"
-                      className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
+                      className="inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
                     >
                       <User className="h-4 w-4" />
                       <span>Sign In to Comment</span>

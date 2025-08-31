@@ -167,21 +167,21 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate(-1)}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </motion.button>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
                   {id ? "Edit Blog" : "Write New Blog"}
                 </h1>
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+                <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-500 mt-1">
                   <span className="flex items-center">
                     <FileText className="h-4 w-4 mr-1" />
                     {wordCount} words
@@ -194,16 +194,17 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleSave("draft")}
                 disabled={isSaving}
-                className="flex items-center px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex items-center px-2 sm:px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-xs sm:text-sm"
               >
-                <Save className="h-4 w-4 mr-2" />
-                Save Draft
+                <Save className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Save Draft</span>
+                <span className="sm:hidden">Save</span>
               </motion.button>
 
               <motion.button
@@ -211,32 +212,45 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleSave("pending")}
                 disabled={isSaving}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="flex items-center px-2 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs sm:text-sm"
               >
-                <Send className="h-4 w-4 mr-2" />
-                Submit for Review
+                <Send className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Submit for Review</span>
+                <span className="sm:hidden">Submit</span>
               </motion.button>
             </div>
+          </div>
+
+          {/* Mobile stats */}
+          <div className="sm:hidden flex items-center justify-center space-x-4 text-xs text-gray-500 pb-2">
+            <span className="flex items-center">
+              <FileText className="h-3 w-3 mr-1" />
+              {wordCount} words
+            </span>
+            <span className="flex items-center">
+              <Clock className="h-3 w-3 mr-1" />
+              {readingTime} min read
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Main Editor */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Title */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6"
             >
               <input
                 type="text"
                 placeholder="Enter your blog title..."
                 value={blogData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
-                className="w-full text-3xl font-bold text-gray-900 placeholder-gray-400 border-none outline-none resize-none"
+                className="w-full text-2xl sm:text-3xl font-bold text-gray-900 placeholder-gray-400 border-none outline-none resize-none"
               />
             </motion.div>
 
@@ -247,17 +261,17 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               transition={{ delay: 0.1 }}
               className="bg-white rounded-xl border border-gray-200 overflow-hidden"
             >
-              <div className="p-6 pb-0">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="p-4 sm:p-6 pb-0">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
                   Content
                 </h3>
               </div>
-              <div className="px-6 pb-6">
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6">
                 <MarkdownEditor
                   value={blogData.content}
                   onChange={(value) => handleInputChange("content", value)}
                   placeholder="Write your blog content using Markdown..."
-                  height={500}
+                  height={400}
                 />
               </div>
             </motion.div>
@@ -267,7 +281,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6"
             >
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Excerpt (Optional)
@@ -276,7 +290,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
                 placeholder="Write a brief summary of your blog..."
                 value={blogData.excerpt}
                 onChange={(e) => handleInputChange("excerpt", e.target.value)}
-                className="w-full h-24 text-gray-900 placeholder-gray-400 border border-gray-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                className="w-full h-20 sm:h-24 text-gray-900 placeholder-gray-400 border border-gray-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm sm:text-base"
                 maxLength={300}
               />
               <div className="text-right text-sm text-gray-500 mt-2">
@@ -286,15 +300,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Status Info */}
             {id && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-xl border border-gray-200 p-6"
+                className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6"
               >
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
                   Status
                 </h3>
                 <div className="flex items-center space-x-2">
@@ -323,7 +337,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6"
             >
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Tags
@@ -335,7 +349,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
-                  className="flex-1 border border-gray-200 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="flex-1 border border-gray-200 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -352,12 +366,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
                     key={index}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    className="inline-flex items-center px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 text-xs sm:text-sm rounded-full"
                   >
                     {tag}
                     <button
                       onClick={() => handleRemoveTag(tag)}
-                      className="ml-2 text-blue-600 hover:text-blue-800"
+                      className="ml-1 sm:ml-2 text-blue-600 hover:text-blue-800"
                     >
                       ×
                     </button>
@@ -371,7 +385,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6"
             >
               <ImageUpload
                 value={blogData.featuredImage}
@@ -385,21 +399,25 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ mode = "create" }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-blue-50 rounded-xl border border-blue-200 p-6"
+              className="bg-blue-50 rounded-xl border border-blue-200 p-4 sm:p-6"
             >
               <div className="flex items-start space-x-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="text-sm font-medium text-blue-900 mb-2">
                     Markdown Writing Tips
                   </h4>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                  <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
                     <li>• Use headers (# ## ###) to structure your content</li>
                     <li>• Add code blocks with ``` for syntax highlighting</li>
                     <li>• Include images with ![alt text](url)</li>
                     <li>• Use **bold** and *italic* for emphasis</li>
-                    <li>• Create tables for better data presentation</li>
-                    <li>• Preview your content before submitting</li>
+                    <li className="hidden sm:list-item">
+                      • Create tables for better data presentation
+                    </li>
+                    <li className="hidden sm:list-item">
+                      • Preview your content before submitting
+                    </li>
                   </ul>
                 </div>
               </div>
