@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import remarkGfm from "remark-gfm";
 import {
   Heart,
@@ -268,11 +269,19 @@ const BlogDetail: React.FC = () => {
   };
 
   const organizeComments = (flatComments: Comment[]): CommentWithReplies[] => {
+    // Filter out null/undefined comments first
+    const validComments = flatComments.filter(comment => 
+      comment && 
+      comment._id && 
+      comment.author && 
+      comment.author._id
+    );
+
     const commentMap = new Map<string, CommentWithReplies>();
     const rootComments: CommentWithReplies[] = [];
 
     // First pass: create all comment objects
-    flatComments.forEach((comment) => {
+    validComments.forEach((comment) => {
       commentMap.set(comment._id, {
         ...comment,
         replies: [],
@@ -281,8 +290,9 @@ const BlogDetail: React.FC = () => {
     });
 
     // Second pass: organize into hierarchy
-    flatComments.forEach((comment) => {
-      const commentObj = commentMap.get(comment._id)!;
+    validComments.forEach((comment) => {
+      const commentObj = commentMap.get(comment._id);
+      if (!commentObj) return;
 
       if (comment.parentComment) {
         const parent = commentMap.get(comment.parentComment);
@@ -584,7 +594,16 @@ const BlogDetail: React.FC = () => {
     const isExpanded = expandedComments.has(comment._id);
     const hasReplies = comment.replies && comment.replies.length > 0;
     const maxDepth = 3;
-    const canDelete = user?._id === comment.author._id;
+    const canDelete = user?._id === comment.author?._id;
+
+    // If comment author is null/undefined, show deleted comment placeholder
+    if (!comment.author) {
+      return (
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <p className="text-gray-500 italic">This comment has been deleted.</p>
+        </div>
+      );
+    }
 
     return (
       <div
@@ -735,7 +754,7 @@ const BlogDetail: React.FC = () => {
             {hasReplies &&
               (isExpanded || expandedComments.has(comment._id)) && (
                 <div className="mt-4 space-y-4">
-                  {comment.replies?.map((reply) => (
+                  {comment.replies?.filter(reply => reply && reply._id).map((reply) => (
                     <CommentThread
                       key={reply._id}
                       comment={reply}
@@ -1053,7 +1072,21 @@ const BlogDetail: React.FC = () => {
       </article>
 
       {/* Comments Section */}
-      <section id="comments-section" className="bg-gray-50 py-8 sm:py-16">
+      <ErrorBoundary 
+        fallback={
+          <div className="bg-gray-50 py-8 sm:py-16">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 p-8">
+                <div className="text-center">
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Comments Temporarily Unavailable</h2>
+                  <p className="text-gray-600">We're experiencing issues loading comments. Please refresh the page to try again.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <section id="comments-section" className="bg-gray-50 py-8 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 w-full overflow-hidden">
           <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
             <div className="p-4 sm:p-8 border-b border-gray-100">
@@ -1125,7 +1158,7 @@ const BlogDetail: React.FC = () => {
                 </div>
               ) : comments.length > 0 ? (
                 <div className="space-y-6 sm:space-y-8">
-                  {comments.map((comment) => (
+                  {comments.filter(comment => comment && comment._id).map((comment) => (
                     <CommentThread key={comment._id} comment={comment} />
                   ))}
                 </div>
@@ -1153,6 +1186,7 @@ const BlogDetail: React.FC = () => {
           </div>
         </div>
       </section>
+      </ErrorBoundary>
 
       {/* Scroll to Top Button */}
       {showScrollTop && (
