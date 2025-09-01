@@ -33,6 +33,7 @@ const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [pendingBlogs, setPendingBlogs] = useState<Blog[]>([]);
   const [publishedBlogs, setPublishedBlogs] = useState<Blog[]>([]);
+  const [hiddenBlogs, setHiddenBlogs] = useState<Blog[]>([]);
   const [recentUsers, setRecentUsers] = useState<UserType[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
@@ -59,17 +60,20 @@ const AdminDashboard: React.FC = () => {
         dashboardStats,
         pendingBlogsData,
         publishedBlogsData,
+        hiddenBlogsData,
         recentUsersData,
       ] = await Promise.all([
         adminService.getDashboardStats(),
         adminService.getPendingBlogs(),
         adminService.getAllBlogs({ status: "approved", limit: 50 }),
+        adminService.getAllBlogs({ status: "hidden", limit: 50 }),
         adminService.getRecentUsers(),
       ]);
 
       setStats(dashboardStats);
       setPendingBlogs(pendingBlogsData);
       setPublishedBlogs(publishedBlogsData.blogs || []);
+      setHiddenBlogs(hiddenBlogsData.blogs || []);
       setRecentUsers(recentUsersData);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -143,10 +147,18 @@ const AdminDashboard: React.FC = () => {
     setRejectionModal({ isOpen: true, blog });
   };
 
-  const handleHideBlog = async (blogId: string) => {
+  const handleToggleBlogVisibility = async (
+    blogId: string,
+    currentStatus: string
+  ) => {
+    const isHiding = currentStatus === "approved";
+    const action = isHiding ? "hide" : "show";
+
     if (
       !window.confirm(
-        "Are you sure you want to hide this blog from public view? You can always show it again later."
+        `Are you sure you want to ${action} this blog ${
+          isHiding ? "from" : "to"
+        } public view?`
       )
     ) {
       return;
@@ -156,24 +168,62 @@ const AdminDashboard: React.FC = () => {
       setActionLoading(blogId);
       await adminService.toggleBlogVisibility(blogId);
 
-      // Remove from published blogs list and update stats
-      setPublishedBlogs(publishedBlogs.filter((blog) => blog._id !== blogId));
+      if (isHiding) {
+        // Moving from published to hidden
+        const blogToHide = publishedBlogs.find((blog) => blog._id === blogId);
+        if (blogToHide) {
+          setPublishedBlogs(
+            publishedBlogs.filter((blog) => blog._id !== blogId)
+          );
+          setHiddenBlogs([...hiddenBlogs, { ...blogToHide, status: "hidden" }]);
+        }
 
-      if (stats) {
-        setStats({
-          ...stats,
-          overview: {
-            ...stats.overview,
-            publishedBlogs: stats.overview.publishedBlogs - 1,
-          },
-        });
+        if (stats) {
+          setStats({
+            ...stats,
+            overview: {
+              ...stats.overview,
+              publishedBlogs: stats.overview.publishedBlogs - 1,
+            },
+          });
+        }
+      } else {
+        // Moving from hidden to published
+        const blogToShow = hiddenBlogs.find((blog) => blog._id === blogId);
+        if (blogToShow) {
+          setHiddenBlogs(hiddenBlogs.filter((blog) => blog._id !== blogId));
+          setPublishedBlogs([
+            ...publishedBlogs,
+            { ...blogToShow, status: "approved" },
+          ]);
+        }
+
+        if (stats) {
+          setStats({
+            ...stats,
+            overview: {
+              ...stats.overview,
+              publishedBlogs: stats.overview.publishedBlogs + 1,
+            },
+          });
+        }
       }
     } catch (error) {
-      console.error("Error hiding blog:", error);
-      alert("Failed to hide blog. Please try again.");
+      console.error("Error toggling blog visibility:", error);
+      alert("Failed to toggle blog visibility. Please try again.");
     } finally {
       setActionLoading(null);
     }
+  };
+
+  // Keep the old function for backwards compatibility in published blogs section
+  const handleHideBlog = async (blogId: string) => {
+    await handleToggleBlogVisibility(blogId, "approved");
+  };
+
+  // New function for showing hidden blogs
+  const handleShowBlog = async (blogId: string) => {
+    await handleToggleBlogVisibility(blogId, "hidden");
   };
 
   const handleDeleteBlog = async (blogId: string) => {
@@ -189,8 +239,9 @@ const AdminDashboard: React.FC = () => {
       setActionLoading(blogId);
       await adminService.deleteBlog(blogId);
 
-      // Remove from published blogs list and update stats
+      // Remove from both published and hidden blogs lists
       setPublishedBlogs(publishedBlogs.filter((blog) => blog._id !== blogId));
+      setHiddenBlogs(hiddenBlogs.filter((blog) => blog._id !== blogId));
 
       if (stats) {
         setStats({
@@ -422,6 +473,19 @@ const AdminDashboard: React.FC = () => {
                 </span>
               </button>
               <button
+                onClick={() => setActiveTab("hidden")}
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap mr-6 sm:mr-8 ${
+                  activeTab === "hidden"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <span className="hidden sm:inline">
+                  Hidden Blogs ({hiddenBlogs.length})
+                </span>
+                <span className="sm:hidden">Hidden ({hiddenBlogs.length})</span>
+              </button>
+              <button
                 onClick={() => setActiveTab("users")}
                 className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "users"
@@ -602,7 +666,9 @@ const AdminDashboard: React.FC = () => {
 
                               <p className="text-gray-600 mb-3 line-clamp-2">
                                 {blog.excerpt ||
-                                  blog.content.substring(0, 200) + "..."}
+                                  (blog.content
+                                    ? blog.content.substring(0, 200) + "..."
+                                    : "No content available")}
                               </p>
 
                               <div className="flex items-center space-x-6 text-sm text-gray-500 mb-4">
@@ -866,6 +932,146 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   );
                 })()}
+              </div>
+            )}
+
+            {activeTab === "hidden" && (
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                      Hidden Blogs
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Blogs that are hidden from public view. Click "Show" to
+                      make them public again.
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <input
+                        type="text"
+                        placeholder="Search hidden blogs..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 pr-4 py-2 w-full sm:w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {hiddenBlogs.length === 0 ? (
+                  <div className="text-center py-16">
+                    <FileText className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                      No Hidden Blogs
+                    </h3>
+                    <p className="text-gray-600">
+                      All blogs are currently visible to the public.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 sm:gap-6">
+                    {hiddenBlogs
+                      .filter(
+                        (blog) =>
+                          (blog.title || "")
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase()) ||
+                          (blog.content || "")
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                      )
+                      .map((blog) => (
+                        <motion.div
+                          key={blog._id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-white p-4 sm:p-6 border border-gray-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                                <div className="flex-1">
+                                  <h4 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                                    {blog.title || "Untitled"}
+                                  </h4>
+                                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                                    {blog.content
+                                      ? blog.content.substring(0, 150) + "..."
+                                      : "No content available"}
+                                  </p>
+                                  <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                                    <span>
+                                      By{" "}
+                                      {blog.author?.firstName ||
+                                        blog.author?.username ||
+                                        "Unknown Author"}
+                                    </span>
+                                    <span>•</span>
+                                    <span>
+                                      {new Date(
+                                        blog.createdAt
+                                      ).toLocaleDateString()}
+                                    </span>
+                                    <span>•</span>
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-800 font-medium">
+                                      Hidden
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <br />
+
+                          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+                            <button
+                              onClick={() => handleBlogPreview(blog)}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            >
+                              Preview Blog →
+                            </button>
+
+                            <div className="flex space-x-3">
+                              <button
+                                onClick={() => handleShowBlog(blog._id)}
+                                disabled={actionLoading === blog._id}
+                                className="inline-flex items-center px-3 py-1.5 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-white hover:bg-green-50 disabled:opacity-50"
+                                title="Show this blog to public view"
+                              >
+                                {actionLoading === blog._id ? (
+                                  <LoadingSpinner size="sm" />
+                                ) : (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                    Show
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteBlog(blog._id)}
+                                disabled={actionLoading === blog._id}
+                                className="inline-flex items-center px-3 py-1.5 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 disabled:opacity-50"
+                                title="Permanently delete this blog"
+                              >
+                                {actionLoading === blog._id ? (
+                                  <LoadingSpinner size="sm" />
+                                ) : (
+                                  <>
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                  </div>
+                )}
               </div>
             )}
 

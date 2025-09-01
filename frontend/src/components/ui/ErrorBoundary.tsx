@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -21,7 +21,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   render() {
@@ -32,9 +32,12 @@ class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h3 className="text-red-800 font-semibold mb-2">Something went wrong</h3>
+          <h3 className="text-red-800 font-semibold mb-2">
+            Something went wrong
+          </h3>
           <p className="text-red-600 text-sm">
-            There was an error loading this content. Please refresh the page to try again.
+            There was an error loading this content. Please refresh the page to
+            try again.
           </p>
         </div>
       );

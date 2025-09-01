@@ -270,11 +270,9 @@ const BlogDetail: React.FC = () => {
 
   const organizeComments = (flatComments: Comment[]): CommentWithReplies[] => {
     // Filter out null/undefined comments first
-    const validComments = flatComments.filter(comment => 
-      comment && 
-      comment._id && 
-      comment.author && 
-      comment.author._id
+    const validComments = flatComments.filter(
+      (comment) =>
+        comment && comment._id && comment.author && comment.author._id
     );
 
     const commentMap = new Map<string, CommentWithReplies>();
@@ -754,13 +752,15 @@ const BlogDetail: React.FC = () => {
             {hasReplies &&
               (isExpanded || expandedComments.has(comment._id)) && (
                 <div className="mt-4 space-y-4">
-                  {comment.replies?.filter(reply => reply && reply._id).map((reply) => (
-                    <CommentThread
-                      key={reply._id}
-                      comment={reply}
-                      depth={depth + 1}
-                    />
-                  ))}
+                  {comment.replies
+                    ?.filter((reply) => reply && reply._id)
+                    .map((reply) => (
+                      <CommentThread
+                        key={reply._id}
+                        comment={reply}
+                        depth={depth + 1}
+                      />
+                    ))}
                 </div>
               )}
           </div>
@@ -1072,14 +1072,19 @@ const BlogDetail: React.FC = () => {
       </article>
 
       {/* Comments Section */}
-      <ErrorBoundary 
+      <ErrorBoundary
         fallback={
           <div className="bg-gray-50 py-8 sm:py-16">
             <div className="max-w-4xl mx-auto px-4">
               <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 p-8">
                 <div className="text-center">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Comments Temporarily Unavailable</h2>
-                  <p className="text-gray-600">We're experiencing issues loading comments. Please refresh the page to try again.</p>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">
+                    Comments Temporarily Unavailable
+                  </h2>
+                  <p className="text-gray-600">
+                    We're experiencing issues loading comments. Please refresh
+                    the page to try again.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1087,91 +1092,63 @@ const BlogDetail: React.FC = () => {
         }
       >
         <section id="comments-section" className="bg-gray-50 py-8 sm:py-16">
-        <div className="max-w-4xl mx-auto px-4 w-full overflow-hidden">
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
-            <div className="p-4 sm:p-8 border-b border-gray-100">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                Discussion ({getTotalCommentsCount()})
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600">
-                Join the conversation and share your thoughts on this article.
-              </p>
-            </div>
+          <div className="max-w-4xl mx-auto px-4 w-full overflow-hidden">
+            <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+              <div className="p-4 sm:p-8 border-b border-gray-100">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                  Discussion ({getTotalCommentsCount()})
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600">
+                  Join the conversation and share your thoughts on this article.
+                </p>
+              </div>
 
-            <div className="p-4 sm:p-8 w-full overflow-hidden">
-              {/* Comment Form */}
-              {user ? (
-                <form onSubmit={handleSubmitComment} className="mb-8 sm:mb-12">
-                  <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 mx-auto sm:mx-0">
-                      {user.firstName?.charAt(0) || user.username?.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <textarea
-                        ref={commentTextareaRef}
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="What are your thoughts on this article?"
-                        className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
-                        rows={3}
-                      />
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-3 sm:mt-4 gap-3">
-                        <p className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
-                          Be respectful and constructive in your comments.
-                        </p>
-                        <button
-                          type="submit"
-                          disabled={!newComment.trim()}
-                          className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
-                        >
-                          <Send className="h-4 w-4" />
-                          <span>Post Comment</span>
-                        </button>
+              <div className="p-4 sm:p-8 w-full overflow-hidden">
+                {/* Comment Form */}
+                {user ? (
+                  <form
+                    onSubmit={handleSubmitComment}
+                    className="mb-8 sm:mb-12"
+                  >
+                    <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 mx-auto sm:mx-0">
+                        {user.firstName?.charAt(0) || user.username?.charAt(0)}
+                      </div>
+                      <div className="flex-1">
+                        <textarea
+                          ref={commentTextareaRef}
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder="What are your thoughts on this article?"
+                          className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                          rows={3}
+                        />
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-3 sm:mt-4 gap-3">
+                          <p className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
+                            Be respectful and constructive in your comments.
+                          </p>
+                          <button
+                            type="submit"
+                            disabled={!newComment.trim()}
+                            className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
+                          >
+                            <Send className="h-4 w-4" />
+                            <span>Post Comment</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </form>
-              ) : (
-                <div className="mb-8 sm:mb-12 p-4 sm:p-8 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl text-center">
-                  <MessageCircle className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Join the discussion
-                  </h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
-                    Sign in to share your thoughts and engage with other
-                    readers.
-                  </p>
-                  <Link
-                    to="/login"
-                    className="inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
-                  >
-                    <User className="h-4 w-4" />
-                    <span>Sign In to Comment</span>
-                  </Link>
-                </div>
-              )}
-
-              {/* Comments List */}
-              {commentsLoading ? (
-                <div className="flex justify-center py-8 sm:py-12">
-                  <LoadingSpinner size="lg" />
-                </div>
-              ) : comments.length > 0 ? (
-                <div className="space-y-6 sm:space-y-8">
-                  {comments.filter(comment => comment && comment._id).map((comment) => (
-                    <CommentThread key={comment._id} comment={comment} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 sm:py-16">
-                  <MessageCircle className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    No comments yet
-                  </h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
-                    Be the first to share your thoughts on this article.
-                  </p>
-                  {!user && (
+                  </form>
+                ) : (
+                  <div className="mb-8 sm:mb-12 p-4 sm:p-8 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl text-center">
+                    <MessageCircle className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                      Join the discussion
+                    </h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+                      Sign in to share your thoughts and engage with other
+                      readers.
+                    </p>
                     <Link
                       to="/login"
                       className="inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
@@ -1179,13 +1156,46 @@ const BlogDetail: React.FC = () => {
                       <User className="h-4 w-4" />
                       <span>Sign In to Comment</span>
                     </Link>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+
+                {/* Comments List */}
+                {commentsLoading ? (
+                  <div className="flex justify-center py-8 sm:py-12">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                ) : comments.length > 0 ? (
+                  <div className="space-y-6 sm:space-y-8">
+                    {comments
+                      .filter((comment) => comment && comment._id)
+                      .map((comment) => (
+                        <CommentThread key={comment._id} comment={comment} />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 sm:py-16">
+                    <MessageCircle className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                      No comments yet
+                    </h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+                      Be the first to share your thoughts on this article.
+                    </p>
+                    {!user && (
+                      <Link
+                        to="/login"
+                        className="inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
+                      >
+                        <User className="h-4 w-4" />
+                        <span>Sign In to Comment</span>
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
       </ErrorBoundary>
 
       {/* Scroll to Top Button */}
